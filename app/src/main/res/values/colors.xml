@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Incidencia (rojo suave) -->
+    <color name="chip_incidencia">#F8D7DA</color>
+
+    <!-- Pendiente (amarillo suave) -->
+    <color name="chip_pendiente">#FFE8B3</color>
+
+    <!-- Avance (verde suave) -->
+    <color name="chip_avance">#D4EDDA</color>
+
+    <!-- Gris neutro (por defecto) -->
+    <color name="chip_default">#D4EDDA</color>
+
+    <color name="red_700">#D32F2F</color>
+    <color name="green_700">#388E3C</color>
+
+</resources>

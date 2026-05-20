@@ -1,0 +1,71 @@
+<resources>
+
+    <!-- Home -->
+    <string name="home_title">Mis notas</string>
+    <string name="home_empty">No tienes notas todavía</string>
+    <string name="home_fab_record">Grabar</string>
+    <string name="home_empty_hint">Pulsa el botón para crear tu primera nota</string>
+    <string name="filter_incidencia">Incidencia</string>
+    <string name="filter_pendiente">Pendiente</string>
+    <string name="filter_avance">Avance</string>
+
+    <!-- Item Record -->
+    <string name="item_record_placeholder">Texto transcrito...</string>
+    <string name="item_record_date_placeholder">10 Apr 2026</string>
+    <string name="item_record_title_placeholder">Título</string>
+    <string name="item_record_state_placeholder">Pendiente</string>
+
+    <!-- Login -->
+    <string name="login_title">Iniciar sesión</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Contraseña</string>
+    <string name="login_button">Iniciar sesión</string>
+    <string name="login_to_signup">Si no tiene un usuario, regístrese</string>
+
+    <!-- SignUp -->
+    <string name="signup_title">Registrar usuario</string>
+    <string name="signup_name_hint">Nombre</string>
+    <string name="signup_email_hint">Email</string>
+    <string name="signup_password_hint">Contraseña</string>
+    <string name="signup_button">Registrar</string>
+    <string name="signup_to_login">Ya tengo cuenta</string>
+
+    <!-- Projects -->
+    <string name="projects_greeting">Hola, %1$s</string>
+    <string name="projects_title">Tus proyectos</string>
+    <string name="projects_search_hint">Buscar...</string>
+    <string name="projects_empty">No tienes proyectos todavía</string>
+    <string name="projects_add">Nuevo proyecto</string>
+
+    <string name="project_name_placeholder">Nombre del proyecto</string>
+
+    <!-- Record -->
+    <string name="record_timer_default">00:00</string>
+    <string name="record_status_idle">Listo para grabar</string>
+    <string name="record_button_start">Grabar</string>
+    <string name="record_button_finish">Finalizar</string>
+
+    <!-- Common -->
+    <string name="app_name">BuildLogAI</string>
+    <string name="common_cancel">Cancelar</string>
+    <string name="common_save">Guardar</string>
+
+    <!-- Validation -->
+    <string name="validation_title">Revisa tu nota</string>
+    <string name="validation_hint">Edita el texto si es necesario...</string>
+
+    <!-- Detail -->
+    <string name="detail_edit">Editar</string>
+    <string name="detail_delete">Eliminar</string>
+
+    <!-- Summary -->
+    <string name="summary_title">Resumen</string>
+    <string name="summary_placeholder">Aquí aparecerá el resumen generado...</string>
+    <string name="summary_download">Descargar PDF</string>
+
+
+    <!-- Edit record -->
+    <string name="edit_title">Editar nota</string>
+    <string name="edit_hint">Modifica el contenido...</string>
+
+</resources>
