@@ -1,0 +1,9 @@
+<resources>
+    <style name="TitleText">
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+    </style>
+
+    <style name="BodyText">
+    <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+</resources>

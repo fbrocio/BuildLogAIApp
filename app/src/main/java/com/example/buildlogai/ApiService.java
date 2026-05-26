@@ -3,6 +3,7 @@ package com.example.buildlogai;
 import com.example.buildlogai.model.AIRequest;
 import com.example.buildlogai.model.AIResponse;
 import com.example.buildlogai.model.AuthResponse;
+import com.example.buildlogai.model.ImageResponse;
 import com.example.buildlogai.model.Project;
 import com.example.buildlogai.model.ParseRequest;
 import com.example.buildlogai.model.ParseResponse;
@@ -91,16 +92,15 @@ public interface ApiService {
             @Query("email") String email
     );
 
-    @Multipart
-    @POST("records/{id}/images")
-    Call<RecordImageDTO> uploadImage(
-            @Path("id") Long recordId,
-            @Part MultipartBody.Part image
-    );
 
     @GET("records/{id}/images")
     Call<List<RecordImageDTO>> getImages(
             @Path("id") Long recordId
+    );
+
+    @DELETE("records/images/{imageId}")
+    Call<Void> deleteImage(
+            @Path("imageId") Long imageId
     );
 
     @GET("api/projects/{id}/users")
@@ -117,6 +117,13 @@ public interface ApiService {
     @DELETE("projects/{id}")
     Call<Void> deleteProject(
             @Path("id") Long projectId
+    );
+
+    @Multipart
+    @POST("records/{id}/images")
+    Call<ImageResponse> uploadImage(
+            @Path("id") Long recordId,
+            @Part MultipartBody.Part image
     );
 
 }

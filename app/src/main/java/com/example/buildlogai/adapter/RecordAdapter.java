@@ -51,8 +51,6 @@ public class RecordAdapter
         TextView tvState;
         TextView tvMeta;
 
-        ImageButton btnEdit;
-
         MaterialCardView cardRecord;
 
         public ViewHolder(View view) {
@@ -64,8 +62,6 @@ public class RecordAdapter
             tvContent = view.findViewById(R.id.tvContent);
             tvState = view.findViewById(R.id.tvState);
             tvMeta = view.findViewById(R.id.tvMeta);
-
-            btnEdit = view.findViewById(R.id.btnEdit);
         }
     }
 
@@ -99,12 +95,6 @@ public class RecordAdapter
 
         holder.cardRecord.setStrokeColor(color);
 
-        holder.cardRecord.setCardBackgroundColor(
-                ContextCompat.getColor(
-                        holder.itemView.getContext(),
-                        android.R.color.white
-                )
-        );
 
         // -----------------------------
         // DESCRIPTION + METADATA
@@ -173,22 +163,6 @@ public class RecordAdapter
             v.getContext().startActivity(intent);
         });
 
-        // -----------------------------
-        // EDIT
-        // -----------------------------
-
-        holder.btnEdit.setOnClickListener(v -> {
-
-            Intent intent =
-                    new Intent(
-                            v.getContext(),
-                            EditRecordActivity.class
-                    );
-
-            intent.putExtra("record", record);
-
-            v.getContext().startActivity(intent);
-        });
 
         holder.itemView.setOnClickListener(v -> {
 
@@ -327,8 +301,8 @@ public class RecordAdapter
 
     private String buildMeta (RecordDTO record) {
         String author =
-                record.getCreatedBy() != null
-                ?record.getCreatedBy().getName()
+                record.getAuthorName() != null
+                ?record.getAuthorName()
                         :"Usuario";
         String relativeDate =
                 formatRelativeTime(record.getCreatedAt());

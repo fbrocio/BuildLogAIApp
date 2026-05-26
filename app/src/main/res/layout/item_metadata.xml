@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,7 +12,7 @@
         android:id="@+id/tvLabel"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
-        android:textColor="#6750A4"
+        android:textColor="?attr/colorPrimary"
         android:textSize="13sp"
         android:textStyle="bold"
         tools:text="Empresa" />
@@ -24,7 +23,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textColor="#1C1B1F"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="13sp"
         tools:text="ArkosLight" />
 
@@ -40,7 +39,8 @@
         android:focusable="true"
         android:gravity="center"
         android:text="-"
-        android:textColor="#C2C2C2"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:alpha="0.6"
         android:textSize="20sp"
         android:textStyle="bold" />
 

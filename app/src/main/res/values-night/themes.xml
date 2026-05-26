@@ -1,7 +1,44 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme para Modo Oscuro -->
     <style name="Base.Theme.BuildLogAI" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Colores principales (Tonos desaturados para oscuridad) -->
+        <item name="colorPrimary">#D0BCFF</item>
+        <item name="colorOnPrimary">#381E72</item>
+        <item name="colorPrimaryContainer">#4F378B</item>
+        <item name="colorOnPrimaryContainer">#EADDFF</item>
+
+        <!-- Colores de Superficie y Fondo -->
+        <item name="android:colorBackground">#1C1B1F</item>
+        <item name="colorSurface">#1C1B1F</item>
+        <item name="colorSurfaceVariant">#49454F</item>
+        <item name="colorOnSurface">#E6E1E5</item>
+        <item name="colorOnSurfaceVariant">#CAC4D0</item>
+
+        <!-- Colores de error -->
+        <item name="colorError">#F2B8B5</item>
+        <item name="colorOnError">#601410</item>
+
+        <!-- Outline y Bordes -->
+        <item name="colorOutline">#938F99</item>
+    </style>
+
+    <style name="Theme.BuildLogAI" parent="Base.Theme.BuildLogAI" />
+
+    <style name="Theme.BuildLogAI.Splash" parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">
+            @color/splash_background
+        </item>
+
+        <item name="windowSplashScreenAnimatedIcon">
+            @drawable/logo
+        </item>
+
+        <item name="postSplashScreenTheme">
+            @style/Theme.BuildLogAI
+        </item>
+
+
+
     </style>
 </resources>

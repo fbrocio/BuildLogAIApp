@@ -27,9 +27,19 @@ public class RecordImageAdapter
         extends RecyclerView.Adapter<RecordImageAdapter.ImageViewHolder> {
 
     private final List<RecordImageDTO> images;
+    private OnImageClickListener listener;
+
+    public interface OnImageClickListener {
+        void onImageClick(RecordImageDTO image, int position);
+        void onImageLongClick(RecordImageDTO image, int position);
+    }
 
     public RecordImageAdapter(List<RecordImageDTO> images) {
         this.images = images;
+    }
+
+    public void setOnImageClickListener(OnImageClickListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -45,11 +55,9 @@ public class RecordImageAdapter
         RecordImageDTO image = images.get(position);
         Context context = holder.itemView.getContext();
 
-        // 1. USAR SIEMPRE LA CONSTANTE DE ApiClient
         String baseUrl = ApiClient.BASE_URL; 
-        String imagePath = image.getImageUrl(); // Debería ser "/upload/records/uuid.jpg"
+        String imagePath = image.getImageUrl(); 
 
-        // Limpiar URL para evitar dobles barras //
         if (baseUrl.endsWith("/") && imagePath.startsWith("/")) {
             imagePath = imagePath.substring(1);
         } else if (!baseUrl.endsWith("/") && !imagePath.startsWith("/")) {
@@ -57,50 +65,42 @@ public class RecordImageAdapter
         }
 
         String imageUrl = baseUrl + imagePath;
-        Log.d("IMAGE_URL", "Cargando en Glide: " + imageUrl);
 
         holder.imageView.setOnClickListener(v -> {
-
-            ArrayList<String> urls = new ArrayList<>();
-
-            for (RecordImageDTO img : images) {
-
-                String path = img.getImageUrl();
-
-                if (baseUrl.endsWith("/") && path.startsWith("/")) {
-                    path = path.substring(1);
-
-                } else if (!baseUrl.endsWith("/") && !path.startsWith("/")) {
-                    path = "/" + path;
+            if (listener != null) {
+                listener.onImageClick(image, position);
+            } else {
+                // Comportamiento por defecto: abrir galería
+                ArrayList<String> urls = new ArrayList<>();
+                for (RecordImageDTO img : images) {
+                    String path = img.getImageUrl();
+                    if (baseUrl.endsWith("/") && path.startsWith("/")) {
+                        path = path.substring(1);
+                    } else if (!baseUrl.endsWith("/") && !path.startsWith("/")) {
+                        path = "/" + path;
+                    }
+                    urls.add(baseUrl + path);
                 }
 
-                urls.add(baseUrl + path);
+                Intent intent = new Intent(context, ImageGalleryActivity.class);
+                intent.putStringArrayListExtra("IMAGES", urls);
+                intent.putExtra("POSITION", position);
+                context.startActivity(intent);
             }
-
-            Intent intent = new Intent(
-                    context,
-                    ImageGalleryActivity.class
-            );
-
-            intent.putStringArrayListExtra(
-                    "IMAGES",
-                    urls
-            );
-
-            intent.putExtra(
-                    "POSITION",
-                    position
-            );
-
-            context.startActivity(intent);
         });
 
-        // 2. Obtener el Token
+        holder.imageView.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onImageLongClick(image, position);
+                return true;
+            }
+            return false;
+        });
+
         SharedPreferences prefs = context.getSharedPreferences("app", Context.MODE_PRIVATE);
         String token = prefs.getString("token", null);
 
         if (token != null) {
-            // 3. Cargar con GlideUrl para enviar el token de seguridad
             GlideUrl glideUrl = new GlideUrl(imageUrl,
                     new LazyHeaders.Builder()
                             .addHeader("Authorization", "Bearer " + token)
@@ -113,7 +113,6 @@ public class RecordImageAdapter
                     .centerCrop()
                     .into(holder.imageView);
         } else {
-            // Carga normal si no hay token (fallará si el backend lo requiere)
             Glide.with(context)
                     .load(imageUrl)
                     .placeholder(android.R.drawable.ic_menu_gallery)

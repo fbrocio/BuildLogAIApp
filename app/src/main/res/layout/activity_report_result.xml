@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground">
 
     <!-- HEADER -->
-
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="0dp"
@@ -22,29 +22,26 @@
             android:id="@+id/btnBack"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/back"
-            android:padding="4dp"
+            android:src="@drawable/outline_arrow_back_ios_new_24"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@string/common_cancel"/>
+            app:tint="?attr/colorOnSurface"
+            android:contentDescription="Volver"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Informe generado"
-            android:textSize="22sp"
+            android:text="Informe IA"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
             android:layout_marginStart="16dp"/>
     </LinearLayout>
 
-    <!-- CONTENIDO -->
-
-    <ScrollView
-        android:id="@+id/scrollReport"
+    <!-- CONTENT -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="100dp"
+        android:padding="16dp"
         app:layout_constraintTop_toBottomOf="@id/layoutHeader"
         app:layout_constraintBottom_toTopOf="@id/btnExportPdf"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,25 +51,22 @@
             android:id="@+id/tvReport"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="16sp"
-            android:lineSpacingExtra="6dp"
-            android:textColor="@android:color/black"/>
-    </ScrollView>
+            android:lineSpacingExtra="4dp"/>
+    </androidx.core.widget.NestedScrollView>
 
-    <!-- BOTÓN PDF -->
-
+    <!-- EXPORT BUTTON -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnExportPdf"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_margin="16dp"
         android:text="Exportar PDF"
         android:textAllCaps="false"
-        android:enabled="true"
         app:icon="@android:drawable/ic_menu_save"
-        app:iconPadding="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

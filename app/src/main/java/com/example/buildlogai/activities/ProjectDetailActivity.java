@@ -34,6 +34,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -59,6 +60,8 @@ public class ProjectDetailActivity extends AppCompatActivity {
     private MaterialCardView btnAddUser;
     private ImageButton btnEditProject;
 
+    private EditText etSearch;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,7 @@ public class ProjectDetailActivity extends AppCompatActivity {
         btnAddUser = findViewById(R.id.btnAddUser);
         layoutUsers = findViewById(R.id.layoutUsers);
         btnEditProject = findViewById(R.id.btnEditProject);
+        etSearch = findViewById(R.id.etSearch);
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -127,6 +131,20 @@ public class ProjectDetailActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        //LISTENER BARRA DE BÚSQUEDA
+        etSearch.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                applyFilters(); // Filtramos cada vez que el texto cambia
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+
         //BOTÓN AÑADIR USUARIO
         btnAddUser.setOnClickListener(v -> {
 
@@ -146,35 +164,75 @@ public class ProjectDetailActivity extends AppCompatActivity {
      * - No seleccionado: Fondo blanco, borde y texto de color.
      */
     private void updateChipVisuals() {
+
         for (int i = 0; i < chipGroupFilters.getChildCount(); i++) {
+
             View view = chipGroupFilters.getChildAt(i);
+
             if (view instanceof Chip) {
+
                 Chip chip = (Chip) view;
+
                 int colorRes;
 
                 if (chip.getId() == R.id.chipIncidencia) {
+
                     colorRes = R.color.chip_incidencia;
+
                 } else if (chip.getId() == R.id.chipPendiente) {
+
                     colorRes = R.color.chip_pendiente;
+
                 } else if (chip.getId() == R.id.chipAvance) {
+
                     colorRes = R.color.chip_avance;
+
                 } else {
                     continue;
                 }
 
-                int color = ContextCompat.getColor(this, colorRes);
+                int chipColor = ContextCompat.getColor(this, colorRes);
+
+                int surfaceColor = MaterialColors.getColor(
+                        chip,
+                        com.google.android.material.R.attr.colorSurface
+                );
+
+                int onPrimary = MaterialColors.getColor(
+                        chip,
+                        com.google.android.material.R.attr.colorOnPrimary
+                );
 
                 if (chip.isChecked()) {
-                    // Seleccionado: Relleno de color, texto blanco, sin borde
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(color));
-                    chip.setTextColor(Color.WHITE);
+
+                    // Seleccionado
+                    chip.setChipBackgroundColor(
+                            ColorStateList.valueOf(chipColor)
+                    );
+
+                    chip.setTextColor(onPrimary);
+
                     chip.setChipStrokeWidth(0f);
+
                 } else {
-                    // No seleccionado: Fondo blanco, borde y texto de color
-                    chip.setChipBackgroundColor(ColorStateList.valueOf(Color.WHITE));
-                    chip.setTextColor(color);
-                    chip.setChipStrokeColor(ColorStateList.valueOf(color));
-                    float strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics());
+
+                    // No seleccionado
+                    chip.setChipBackgroundColor(
+                            ColorStateList.valueOf(surfaceColor)
+                    );
+
+                    chip.setTextColor(chipColor);
+
+                    chip.setChipStrokeColor(
+                            ColorStateList.valueOf(chipColor)
+                    );
+
+                    float strokeWidth = TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            2,
+                            getResources().getDisplayMetrics()
+                    );
+
                     chip.setChipStrokeWidth(strokeWidth);
                 }
             }
@@ -284,36 +342,46 @@ public class ProjectDetailActivity extends AppCompatActivity {
         if (allRecords == null || adapter == null) return;
 
         List<Integer> checkedIds = chipGroupFilters.getCheckedChipIds();
-
-        // Si no hay filtros seleccionados, mostramos toda la lista
-        if (checkedIds.isEmpty()) {
-            adapter.updateList(new ArrayList<>(allRecords));
-            return;
-        }
+        String query = etSearch.getText().toString().toLowerCase().trim();
 
         List<RecordDTO> filteredList = new ArrayList<>();
 
         for (RecordDTO record : allRecords) {
-            String type = record.getType();
-            if (type == null) continue;
-
-            boolean matches = false;
-            for (Integer id : checkedIds) {
-                if (id == R.id.chipIncidencia && type.equalsIgnoreCase("incidencia")) {
-                    matches = true;
-                } else if (id == R.id.chipPendiente && type.equalsIgnoreCase("pendiente")) {
-                    matches = true;
-                } else if (id == R.id.chipAvance && type.equalsIgnoreCase("avance")) {
-                    matches = true;
+            // Filtro por TIPO (Chips)
+            boolean matchesType = true;
+            if (!checkedIds.isEmpty()) {
+                matchesType = false;
+                String type = record.getType();
+                if (type != null) {
+                    if (checkedIds.contains(R.id.chipIncidencia) && type.equalsIgnoreCase("incidencia")) matchesType = true;
+                    if (checkedIds.contains(R.id.chipPendiente) && type.equalsIgnoreCase("pendiente")) matchesType = true;
+                    if (checkedIds.contains(R.id.chipAvance) && type.equalsIgnoreCase("avance")) matchesType = true;
                 }
             }
 
-            if (matches) {
+            // Filtro por TEXTO (Buscador)
+            boolean matchesSearch = true;
+            if (!query.isEmpty()) {
+                boolean titleMatch = record.getTitle() != null && record.getTitle().toLowerCase().contains(query);
+                boolean descMatch = record.getDescription() != null && record.getDescription().toLowerCase().contains(query);
+                matchesSearch = titleMatch || descMatch;
+            }
+
+            // Si cumple ambos criterios, se añade a la lista
+            if (matchesType && matchesSearch) {
                 filteredList.add(record);
             }
         }
 
         adapter.updateList(filteredList);
+
+        // Mostrar/ocultar estado vacío si no hay resultados
+        View layoutEmpty = findViewById(R.id.layoutEmpty);
+        if (filteredList.isEmpty()) {
+            layoutEmpty.setVisibility(View.VISIBLE);
+        } else {
+            layoutEmpty.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -697,9 +765,12 @@ public class ProjectDetailActivity extends AppCompatActivity {
 
         addButton.setStrokeWidth(2);
 
-        addButton.setStrokeColor(
-                Color.parseColor("#BDBDBD")
+        int outlineColor = MaterialColors.getColor(
+                addButton,
+                com.google.android.material.R.attr.colorOutline
         );
+
+        addButton.setStrokeColor(outlineColor);
 
         addButton.setCardBackgroundColor(Color.WHITE);
 
@@ -720,9 +791,12 @@ public class ProjectDetailActivity extends AppCompatActivity {
 
         plus.setTypeface(null, Typeface.BOLD);
 
-        plus.setTextColor(
-                Color.parseColor("#616161")
+        int textColor = MaterialColors.getColor(
+                plus,
+                com.google.android.material.R.attr.colorOnSurface
         );
+
+        plus.setTextColor(textColor);
 
         addButton.addView(plus);
 

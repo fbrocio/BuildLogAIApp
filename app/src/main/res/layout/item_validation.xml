@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,8 +9,9 @@
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="16dp"
     app:cardElevation="2dp"
-    app:strokeColor="#E6E0EC"
-    app:strokeWidth="1dp">
+    app:strokeColor="?attr/colorOutlineVariant"
+    app:strokeWidth="1dp"
+    app:cardBackgroundColor="?attr/colorSurface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +27,7 @@
             android:layout_marginBottom="8dp"
             android:letterSpacing="0.08"
             android:textAllCaps="true"
-            android:textColor="#6B6B6B"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="11sp"
             android:textStyle="bold"
             tools:text="INCIDENCIA" />
@@ -35,7 +37,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#1C1B1F"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="20sp"
             android:textStyle="bold"
             tools:text="Recepción de luminarias defectuosas" />
@@ -47,7 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:lineSpacingExtra="2dp"
-            android:textColor="#49454F"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="14sp"
             tools:text="Han llegado 4 luminarias rotas de ArkosLight." />
 
@@ -57,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:background="#F8F5FB"
+            android:background="?attr/colorSurfaceVariant"
             android:orientation="vertical"
             android:padding="12dp">
 
@@ -73,7 +75,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Datos detectados"
-                    android:textColor="#6750A4"
+                    android:textColor="?attr/colorPrimary"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
@@ -86,7 +88,7 @@
                     android:contentDescription="Eliminar metadata"
                     android:padding="6dp"
                     android:src="@android:drawable/ic_menu_close_clear_cancel"
-                    app:tint="#666666" />
+                    app:tint="?attr/colorOnSurfaceVariant" />
 
             </LinearLayout>
 
@@ -107,9 +109,9 @@
                 android:layout_marginTop="6dp"
                 android:text="Añadir dato"
                 android:textAllCaps="false"
-                android:textColor="#6750A4"
+                android:textColor="?attr/colorPrimary"
                 app:icon="@android:drawable/ic_input_add"
-                app:iconTint="#6750A4" />
+                app:iconTint="?attr/colorPrimary" />
 
         </LinearLayout>
 
@@ -128,8 +130,8 @@
                 android:contentDescription="Añadir imagen"
                 app:srcCompat="@android:drawable/ic_menu_camera"
                 app:fabSize="mini"
-                app:backgroundTint="#6750A4"
-                app:tint="@android:color/white"
+                app:backgroundTint="?attr/colorPrimary"
+                app:tint="?attr/colorOnPrimary"
                 app:borderWidth="0dp"
                 app:elevation="2dp" />
 
@@ -138,7 +140,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
                 android:layout_marginTop="10dp"
-                android:background="#ECECEC"
+                android:background="?attr/colorSurfaceVariant"
                 android:scaleType="centerCrop"
                 android:visibility="gone" />
 
@@ -159,7 +161,7 @@
                 android:layout_weight="1"
                 android:text="Rechazar"
                 android:textAllCaps="false"
-                android:textColor="#B3261E" />
+                android:textColor="?attr/colorError" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAccept"
@@ -169,7 +171,9 @@
                 android:layout_weight="1"
                 android:text="Aceptar"
                 android:textAllCaps="false"
-                app:cornerRadius="24dp" />
+                app:cornerRadius="24dp"
+                app:backgroundTint="?attr/colorPrimary"
+                android:textColor="?attr/colorOnPrimary" />
 
         </LinearLayout>
 

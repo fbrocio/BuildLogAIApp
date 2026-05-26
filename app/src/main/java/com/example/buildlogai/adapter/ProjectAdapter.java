@@ -12,6 +12,7 @@ import com.example.buildlogai.R;
 import com.example.buildlogai.activities.ProjectDetailActivity;
 import com.example.buildlogai.model.Project;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHolder> {
@@ -20,6 +21,11 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
 
     public ProjectAdapter(List<Project> lista) {
         this.lista = lista;
+    }
+
+    public void updateList(List<Project> newList) {
+        this.lista = new ArrayList<>(newList);
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -33,10 +39,8 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_project, parent, false); // 🔥 TU XML
-
+                .inflate(R.layout.item_project, parent, false);
         return new ViewHolder(view);
     }
 
@@ -56,7 +60,6 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return lista.size();
+        return lista != null ? lista.size() : 0;
     }
-
 }

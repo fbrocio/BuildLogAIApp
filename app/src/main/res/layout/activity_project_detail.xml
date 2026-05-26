@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground"
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- BOTÓN VOLVER -->
@@ -11,10 +12,11 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginStart="16dp"
-        android:src="@drawable/back"
+        android:src="@drawable/outline_arrow_back_ios_new_24"
         android:contentDescription="@string/common_cancel"
         android:clickable="true"
         android:focusable="true"
+        app:tint="?attr/colorOnSurface"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintTop_toTopOf="@id/layoutHeader"
         app:layout_constraintBottom_toBottomOf="@id/layoutHeader"
@@ -38,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/project_name_placeholder"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="20sp"
             android:textStyle="bold"/>
 
@@ -47,8 +50,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
-
-            <!-- ADD USER -->
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btnAddUser"
@@ -61,20 +62,21 @@
                 app:cardCornerRadius="18dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="1dp"
-                app:strokeColor="#BDBDBD"
-                app:cardBackgroundColor="@android:color/white">
+                app:strokeColor="?attr/colorOutlineVariant"
+                app:cardBackgroundColor="?attr/colorSurface">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="+"
-                    android:textColor="#616161"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:textStyle="bold"
                     android:textSize="20sp"/>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </LinearLayout>
+
     <!-- ACCIONES PROYECTO -->
     <LinearLayout
         android:id="@+id/layoutProjectActions"
@@ -89,7 +91,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- EDITAR -->
         <ImageButton
             android:id="@+id/btnEditProject"
             android:layout_width="40dp"
@@ -97,11 +98,10 @@
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_edit_24"
             android:contentDescription="Editar proyecto"
-            android:tint="#616161"
+            app:tint="?attr/colorOnSurfaceVariant"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"/>
     </LinearLayout>
-
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGenerateReport"
@@ -111,29 +111,41 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:minHeight="56dp"
-
         android:textAllCaps="false"
         android:textSize="16sp"
         app:icon="@drawable/ic_report"
         app:iconPadding="12dp"
         app:iconSize="24dp"
         app:iconGravity="textStart"
+        app:backgroundTint="?attr/colorPrimary"
+        app:tint="?attr/colorOnPrimary"
         style="@style/Widget.MaterialComponents.Button"
         app:layout_constraintTop_toBottomOf="@id/layoutProjectActions"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <!-- BUSCADOR -->
-    <EditText
-        android:id="@+id/etSearch"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/projects_search_hint"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="8dp"
-        android:padding="12dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:startIconDrawable="@android:drawable/ic_menu_search"
+        app:startIconTint="?attr/colorOnSurfaceVariant"
         app:layout_constraintTop_toBottomOf="@id/btnGenerateReport"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/projects_search_hint"
+            android:padding="12dp"
+            android:textColor="?attr/colorOnSurface"
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- FILTROS (CHIPS) -->
     <com.google.android.material.chip.ChipGroup
@@ -143,7 +155,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="8dp"
         app:singleSelection="false"
-        app:layout_constraintTop_toBottomOf="@id/etSearch"
+        app:layout_constraintTop_toBottomOf="@id/layoutSearch"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -154,7 +166,7 @@
             android:layout_height="wrap_content"
             android:text="@string/filter_incidencia"
             android:checkable="true"
-            app:chipBackgroundColor="@android:color/white"
+            app:chipBackgroundColor="?attr/colorSurface"
             app:chipStrokeColor="@color/chip_incidencia"
             app:chipStrokeWidth="2dp"
             android:textColor="@color/chip_incidencia" />
@@ -166,7 +178,7 @@
             android:layout_height="wrap_content"
             android:text="@string/filter_pendiente"
             android:checkable="true"
-            app:chipBackgroundColor="@android:color/white"
+            app:chipBackgroundColor="?attr/colorSurface"
             app:chipStrokeColor="@color/chip_pendiente"
             app:chipStrokeWidth="2dp"
             android:textColor="@color/chip_pendiente" />
@@ -178,7 +190,7 @@
             android:layout_height="wrap_content"
             android:text="@string/filter_avance"
             android:checkable="true"
-            app:chipBackgroundColor="@android:color/white"
+            app:chipBackgroundColor="?attr/colorSurface"
             app:chipStrokeColor="@color/chip_avance"
             app:chipStrokeWidth="2dp"
             android:textColor="@color/chip_avance" />
@@ -216,6 +228,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/home_empty"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="16sp"
             android:layout_marginBottom="8dp"/>
 
@@ -223,6 +236,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/home_empty_hint"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="14sp"
             android:alpha="0.7"/>
 
@@ -235,6 +249,8 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/home_fab_record"
         app:srcCompat="@android:drawable/ic_btn_speak_now"
+        app:backgroundTint="?attr/colorPrimary"
+        app:tint="?attr/colorOnPrimary"
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

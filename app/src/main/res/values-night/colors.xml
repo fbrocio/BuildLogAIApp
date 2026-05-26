@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Fondo Login (Modo Oscuro) -->
+    <color name="login_gradient_start">#2D1B4D</color>
+    <color name="login_gradient_end">#121212</color>
+
+    <color name="splash_background">#121212</color>
+</resources>

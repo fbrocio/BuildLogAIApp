@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:attr/colorBackground">
 
     <!-- HEADER -->
-
     <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="0dp"
@@ -22,10 +22,16 @@
             android:id="@+id/btnBack"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:src="@drawable/back"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/outline_arrow_back_ios_new_24"
+            android:contentDescription="@string/common_cancel"
+            android:clickable="true"
+            android:focusable="true"
+            app:tint="?attr/colorOnSurface"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="4dp"
-            android:contentDescription="@string/common_cancel"/>
+            app:layout_constraintTop_toTopOf="@id/tvTitle"
+            app:layout_constraintBottom_toBottomOf="@id/tvTitle"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -33,11 +39,11 @@
             android:text="Generar informe"
             android:textSize="22sp"
             android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"
             android:layout_marginStart="16dp"/>
     </LinearLayout>
 
     <!-- CONTENIDO -->
-
     <LinearLayout
         android:id="@+id/layoutContent"
         android:layout_width="0dp"
@@ -49,29 +55,30 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <!-- TEMA -->
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tema"
             android:textStyle="bold"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnSurface"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTopic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Ej: luminarias, ventanas..."
+                android:textColor="?attr/colorOnSurface"
                 android:inputType="text"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- DIVIDER -->
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -79,25 +86,29 @@
             android:textSize="16sp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
+            android:layout_gravity="center"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:alpha="0.6"/>
 
         <!-- FECHA -->
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Fecha"
             android:textStyle="bold"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:textColor="?attr/colorOnSurface"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSelectDate"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Seleccionar fecha"
             android:textAllCaps="false"
-            app:icon="@android:drawable/ic_menu_my_calendar"/>
+            app:icon="@android:drawable/ic_menu_my_calendar"
+            app:iconTint="?attr/colorPrimary"/>
 
         <TextView
             android:id="@+id/tvSelectedDate"
@@ -105,12 +116,12 @@
             android:layout_height="wrap_content"
             android:text="Ninguna fecha seleccionada"
             android:layout_marginTop="8dp"
+            android:textColor="?attr/colorOnSurfaceVariant"
             android:alpha="0.7"/>
 
     </LinearLayout>
 
     <!-- BOTÓN GENERAR -->
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGenerate"
         android:layout_width="0dp"
@@ -119,8 +130,11 @@
         android:text="Generar informe"
         android:textAllCaps="false"
         android:minHeight="56dp"
+        app:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"
         app:icon="@drawable/ic_report"
         app:iconPadding="12dp"
+        app:iconTint="?attr/colorOnPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -134,6 +148,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

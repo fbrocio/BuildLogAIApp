@@ -2,14 +2,15 @@ package com.example.buildlogai.activities;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,12 +22,13 @@ import com.example.buildlogai.ApiClient;
 import com.example.buildlogai.ApiService;
 import com.example.buildlogai.R;
 import com.example.buildlogai.adapter.RecordImageAdapter;
+import com.example.buildlogai.model.ImageResponse;
 import com.example.buildlogai.model.RecordDTO;
 import com.example.buildlogai.model.RecordImageDTO;
 import com.example.buildlogai.model.StructuredData;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -47,133 +49,251 @@ public class RecordDetailActivity extends AppCompatActivity {
 
     private ImageView btnBack;
     private ImageButton btnEdit;
-
     private Chip chipStatus;
-
-    private TextView tvType;
-    private TextView tvTitle;
-    private TextView tvDescription;
-    private TextView tvStructuredData;
-    private TextView tvCreatedBy;
-    private TextView tvDate;
+    private TextView tvType, tvTitle, tvDescription, tvCreatedBy, tvDate;
     private FloatingActionButton btnAddImage;
-
     private RecyclerView rvImages;
 
+    // Tabla de datos estructurados
+    private TableLayout tableStructuredData;
+    private View rowCompany, rowSubject, rowQuantity, rowDueDate, rowPercentage, rowPrice;
+    private TextView tvTableCompany, tvTableSubject, tvTableQuantity, tvTableDueDate, tvTablePercentage, tvTablePrice;
+    private TextView tvNoStructuredData;
+
     private ApiService apiService;
-
     private RecordDTO record;
-
     private Long recordId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_record_detail);
 
-        // INIT VIEWS
+        initViews();
+        apiService = ApiClient.getClient(this).create(ApiService.class);
 
+        recordId = getIntent().getLongExtra("RECORD_ID", -1L);
+
+        btnBack.setOnClickListener(v -> finish());
+        btnAddImage.setOnClickListener(v -> openGallery());
+        chipStatus.setOnClickListener(v -> toggleStatus());
+        btnEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(this, EditRecordActivity.class);
+            intent.putExtra("record", record);
+            startActivity(intent);
+        });
+
+        loadRecord();
+    }
+
+    private void initViews() {
         btnBack = findViewById(R.id.btnBack);
         btnEdit = findViewById(R.id.btnEdit);
-
         chipStatus = findViewById(R.id.chipStatus);
-
         tvType = findViewById(R.id.tvType);
         tvTitle = findViewById(R.id.tvTitle);
         tvDescription = findViewById(R.id.tvDescription);
-        tvStructuredData = findViewById(R.id.tvStructuredData);
         tvCreatedBy = findViewById(R.id.tvCreatedBy);
         tvDate = findViewById(R.id.tvDate);
-
-
         rvImages = findViewById(R.id.rvImages);
         btnAddImage = findViewById(R.id.btnAddImage);
 
-        // API
+        tableStructuredData = findViewById(R.id.tableStructuredData);
+        tvNoStructuredData = findViewById(R.id.tvNoStructuredData);
+        
+        rowCompany = findViewById(R.id.rowCompany);
+        rowSubject = findViewById(R.id.rowSubject);
+        rowQuantity = findViewById(R.id.rowQuantity);
+        rowDueDate = findViewById(R.id.rowDueDate);
+        rowPercentage = findViewById(R.id.rowPercentage);
+        rowPrice = findViewById(R.id.rowPrice);
 
-        apiService = ApiClient
-                .getClient(this)
-                .create(ApiService.class);
+        tvTableCompany = findViewById(R.id.tvTableCompany);
+        tvTableSubject = findViewById(R.id.tvTableSubject);
+        tvTableQuantity = findViewById(R.id.tvTableQuantity);
+        tvTableDueDate = findViewById(R.id.tvTableDueDate);
+        tvTablePercentage = findViewById(R.id.tvTablePercentage);
+        tvTablePrice = findViewById(R.id.tvTablePrice);
+    }
 
-        // INTENT
+    private void populateUI() {
+        tvType.setText(record.getType());
+        tvTitle.setText(record.getTitle());
+        tvDescription.setText(record.getDescription());
+        
+        String author = record.getAuthorName()!= null ? record.getAuthorName() :"Usuario";
+        tvCreatedBy.setText("👤 Por " + author);
+        tvDate.setText("🕒 " + formatDetailDate(record.getCreatedAt()));
 
-        recordId = getIntent()
-                .getLongExtra(
-                        "RECORD_ID",
-                        -1L
-                );
+        populateStructuredDataTable();
+    }
 
-        // BACK BUTTON
+    private void populateStructuredDataTable() {
+        StructuredData data = record.getStructuredData();
 
-        btnBack.setOnClickListener(v -> finish());
+        if (data == null) {
+            tableStructuredData.setVisibility(View.GONE);
+            tvNoStructuredData.setVisibility(View.VISIBLE);
+            return;
+        }
 
-        //AÑADIR IMAGEN
+        tableStructuredData.setVisibility(View.VISIBLE);
+        tvNoStructuredData.setVisibility(View.GONE);
 
-        btnAddImage.setOnClickListener(v -> openGallery());
+        // Mapeo de campos a la tabla (con efecto gris si están vacíos)
+        setupTableRow(rowCompany, tvTableCompany, data.getCompany());
+        setupTableRow(rowSubject, tvTableSubject, data.getSubject());
+        
+        String qty = (data.getQuantity() != null) ? data.getQuantity() + " " + (data.getUnit() != null ? data.getUnit() : "") : null;
+        setupTableRow(rowQuantity, tvTableQuantity, qty);
+        
+        setupTableRow(rowDueDate, tvTableDueDate, data.getDueDate());
+        
+        String pct = (data.getPercentage() != null) ? data.getPercentage() + "%" : null;
+        setupTableRow(rowPercentage, tvTablePercentage, pct);
+        
+        String price = (data.getPrice() != null) ? data.getPrice() + " €" : null;
+        setupTableRow(rowPrice, tvTablePrice, price);
+    }
 
-        // STATUS CLICK
+    /**
+     * Configura visualmente una fila de la tabla.
+     * Si el valor existe: Colores normales (negro/gris oscuro).
+     * Si el valor es nulo/vacío: Colores claros (gris suave) y muestra "-".
+     */
+    private void setupTableRow(View row, TextView valueTextView, String value) {
 
-        chipStatus.setOnClickListener(v -> {
+        row.setVisibility(View.VISIBLE);
 
-            toggleStatus();
+        TextView labelTextView = null;
+
+        if (row instanceof TableRow && ((TableRow) row).getChildCount() > 0) {
+            labelTextView = (TextView) ((TableRow) row).getChildAt(0);
+        }
+
+        // Colores dinámicos del tema Material 3
+        int activeColor = MaterialColors.getColor(
+                row,
+                com.google.android.material.R.attr.colorOnSurface
+        );
+
+        int secondaryColor = MaterialColors.getColor(
+                row,
+                com.google.android.material.R.attr.colorOnSurfaceVariant
+        );
+
+        valueTextView.setAlpha(1f);
+
+        // Estado ACTIVO: hay información
+        if (value != null && !value.trim().isEmpty()) {
+
+            // Etiqueta más suave
+            if (labelTextView != null) {
+                labelTextView.setTextColor(secondaryColor);
+            }
+
+            // Valor principal más visible
+            valueTextView.setTextColor(activeColor);
+
+            valueTextView.setText(value);
+
+        } else {
+
+            // Estado INACTIVO: sin información
+            if (labelTextView != null) {
+                labelTextView.setTextColor(secondaryColor);
+            }
+
+            valueTextView.setTextColor(secondaryColor);
+
+            valueTextView.setAlpha(0.45f);
+
+            valueTextView.setText("-");
+        }
+    }
+
+    private void loadRecord() {
+        apiService.getRecordById(recordId).enqueue(new Callback<RecordDTO>() {
+            @Override
+            public void onResponse(Call<RecordDTO> call, Response<RecordDTO> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    record = response.body();
+                    populateUI();
+                    loadImages();
+                    updateStatusUI();
+                }
+            }
+            @Override
+            public void onFailure(Call<RecordDTO> call, Throwable t) {
+                Log.e("API", "Error al cargar record", t);
+            }
         });
+    }
 
-        // LOAD DATA
+    private String formatDetailDate(String createdAt) {
+        if (createdAt == null) return "Sin fecha";
+        try {
+            java.text.SimpleDateFormat parser = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US);
+            java.util.Date date = parser.parse(createdAt);
+            if (date == null) return createdAt;
+            java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("dd MMMM yyyy", new java.util.Locale("es", "ES"));
+            return formatter.format(date).toUpperCase();
+        } catch (Exception e) {
+            return createdAt;
+        }
+    }
 
-        loadRecord();
+    private void updateStatusUI() {
+        boolean closed = "CERRADA".equalsIgnoreCase(record.getStatus());
+        chipStatus.setText(closed ? "CERRADA" : "ABIERTA");
+        chipStatus.setTextColor(Color.parseColor(closed ? "#2E7D32" : "#C62828"));
+        chipStatus.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor(closed ? "#E8F5E9" : "#FDECEC")));
+    }
 
-        btnEdit.setOnClickListener(v -> {
+    private void loadImages() {
+        apiService.getImages(recordId).enqueue(new Callback<List<RecordImageDTO>>() {
+            @Override
+            public void onResponse(Call<List<RecordImageDTO>> call, Response<List<RecordImageDTO>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    rvImages.setLayoutManager(new LinearLayoutManager(RecordDetailActivity.this, LinearLayoutManager.HORIZONTAL, false));
+                    rvImages.setAdapter(new RecordImageAdapter(response.body()));
+                }
+            }
+            @Override
+            public void onFailure(Call<List<RecordImageDTO>> call, Throwable t) {}
+        });
+    }
 
-            Intent intent = new Intent(
-                    RecordDetailActivity.this,
-                    EditRecordActivity.class
-            );
-
-            intent.putExtra(
-                    "record",
-                    record
-            );
-
-            startActivity(intent);
+    private void toggleStatus() {
+        if (record == null) return;
+        String newStatus = "CERRADA".equalsIgnoreCase(record.getStatus()) ? "ABIERTA" : "CERRADA";
+        Map<String, String> body = new HashMap<>();
+        body.put("status", newStatus);
+        apiService.updateRecordStatus(recordId, body).enqueue(new Callback<RecordDTO>() {
+            @Override
+            public void onResponse(Call<RecordDTO> call, Response<RecordDTO> response) {
+                if (response.isSuccessful()) {
+                    record.setStatus(newStatus);
+                    updateStatusUI();
+                }
+            }
+            @Override
+            public void onFailure(Call<RecordDTO> call, Throwable t) {}
         });
     }
 
     private void openGallery() {
-
-        Intent intent = new Intent(
-                Intent.ACTION_PICK
-        );
-
+        Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-
         startActivityForResult(intent, 100);
     }
 
     @Override
-    protected void onActivityResult(
-            int requestCode,
-            int resultCode,
-            Intent data
-    ) {
-
-        super.onActivityResult(
-                requestCode,
-                resultCode,
-                data
-        );
-
-        if (requestCode == 100
-                && resultCode == RESULT_OK
-                && data != null) {
-
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
-
-            if (imageUri != null) {
-
-                uploadImage(imageUri);
-            }
+            if (imageUri != null) uploadImage(imageUri);
         }
     }
 
@@ -184,20 +304,10 @@ public class RecordDetailActivity extends AppCompatActivity {
             InputStream inputStream =
                     getContentResolver().openInputStream(uri);
 
-            if (inputStream == null) {
-
-                Toast.makeText(
-                        this,
-                        "No se pudo abrir imagen",
-                        Toast.LENGTH_SHORT
-                ).show();
-
-                return;
-            }
-
-            File tempFile = new File(
-                    getCacheDir(),
-                    "upload_image.jpg"
+            File tempFile = File.createTempFile(
+                    "upload_",
+                    ".jpg",
+                    getCacheDir()
             );
 
             OutputStream outputStream =
@@ -207,14 +317,9 @@ public class RecordDetailActivity extends AppCompatActivity {
 
             int bytesRead;
 
-            while ((bytesRead =
-                    inputStream.read(buffer)) != -1) {
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
 
-                outputStream.write(
-                        buffer,
-                        0,
-                        bytesRead
-                );
+                outputStream.write(buffer, 0, bytesRead);
             }
 
             outputStream.close();
@@ -233,51 +338,42 @@ public class RecordDetailActivity extends AppCompatActivity {
                             requestFile
                     );
 
-            apiService.uploadImage(
-                    recordId,
-                    body
-            ).enqueue(new Callback<RecordImageDTO>() {
+            apiService.uploadImage(recordId, body)
+                    .enqueue(new Callback<ImageResponse>() {
 
-                @Override
-                public void onResponse(
-                        Call<RecordImageDTO> call,
-                        Response<RecordImageDTO> response
-                ) {
+                        @Override
+                        public void onResponse(
+                                Call<ImageResponse> call,
+                                Response<ImageResponse> response
+                        ) {
 
-                    if (response.isSuccessful()) {
+                            if (response.isSuccessful()) {
 
-                        Toast.makeText(
-                                RecordDetailActivity.this,
-                                "Imagen subida",
-                                Toast.LENGTH_SHORT
-                        ).show();
+                                Toast.makeText(
+                                        RecordDetailActivity.this,
+                                        "Imagen subida",
+                                        Toast.LENGTH_SHORT
+                                ).show();
 
-                    } else {
+                                loadImages();
+                            }
+                        }
 
-                        Toast.makeText(
-                                RecordDetailActivity.this,
-                                "Error backend: "
-                                        + response.code(),
-                                Toast.LENGTH_SHORT
-                        ).show();
-                    }
-                }
+                        @Override
+                        public void onFailure(
+                                Call<ImageResponse> call,
+                                Throwable t
+                        ) {
 
-                @Override
-                public void onFailure(
-                        Call<RecordImageDTO> call,
-                        Throwable t
-                ) {
+                            t.printStackTrace();
 
-                    t.printStackTrace();
-
-                    Toast.makeText(
-                            RecordDetailActivity.this,
-                            t.getMessage(),
-                            Toast.LENGTH_LONG
-                    ).show();
-                }
-            });
+                            Toast.makeText(
+                                    RecordDetailActivity.this,
+                                    "Error subiendo imagen",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    });
 
         } catch (Exception e) {
 
@@ -289,316 +385,5 @@ public class RecordDetailActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT
             ).show();
         }
-    }
-
-
-
-    private void loadRecord() {
-
-        apiService.getRecordById(recordId)
-                .enqueue(new Callback<RecordDTO>() {
-
-                    @Override
-                    public void onResponse(
-                            Call<RecordDTO> call,
-                            Response<RecordDTO> response
-                    ) {
-
-                        if (response.isSuccessful()
-                                && response.body() != null) {
-
-                            record = response.body();
-
-                            populateUI();
-
-                            loadImages();
-
-                            updateStatusUI();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(
-                            Call<RecordDTO> call,
-                            Throwable t
-                    ) {
-
-                        t.printStackTrace();
-                    }
-                });
-    }
-
-    private void populateUI() {
-        Log.d("DEBUG_RECORD", "createdBy raw = " + record.getCreatedBy());
-
-        if (record.getCreatedBy() != null) {
-            Log.d("DEBUG_RECORD", "createdBy name = "
-                    + record.getCreatedBy().getName());
-        }
-        Log.d("DEBUG_RECORD", new Gson().toJson(record));
-        Log.d("DEBUG_RECORD", new Gson().toJson(record));
-        if (record.getCreatedBy() != null) {
-            Log.d("DEBUG_RECORD", "name = " + record.getCreatedBy().getName());
-        }
-        tvType.setText(
-                record.getType()
-        );
-
-        tvTitle.setText(
-                record.getTitle()
-        );
-
-        tvDescription.setText(
-                record.getDescription()
-        );
-
-        tvStructuredData.setText(
-                buildStructuredDataText()
-        );
-
-        String author =
-                record.getCreatedBy() != null
-                        ? record.getCreatedBy().getName()
-                        : "Usuario";
-        tvCreatedBy.setText("👤 " + author);
-
-
-        tvDate.setText("🕒 " + formatDetailDate(record.getCreatedAt()));
-    }
-
-    private String formatDetailDate(String createdAt) {
-        if (createdAt == null) return "Sin fecha";
-
-        try {
-            // Parser para el formato ISO que viene del backend (ej: 2026-05-15T10:00:00)
-            java.text.SimpleDateFormat parser = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US);
-            java.util.Date date = parser.parse(createdAt);
-
-            if (date == null) return createdAt;
-
-            // Formateador para el estilo deseado: 15 MAYO 2026
-            java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat("dd MMMM yyyy", new java.util.Locale("es", "ES"));
-            return formatter.format(date).toUpperCase();
-
-        } catch (Exception e) {
-            // Si falla el parseo, devolvemos el original para no dejar el campo vacío
-            return createdAt;
-        }
-    }
-
-    private void updateStatusUI() {
-
-        boolean closed = "CERRADA".equalsIgnoreCase(
-                record.getStatus()
-        );
-
-        if (closed) {
-
-            chipStatus.setText("CERRADA");
-
-            chipStatus.setTextColor(
-                    Color.parseColor("#2E7D32")
-            );
-
-            chipStatus.setChipBackgroundColor(
-                    ColorStateList.valueOf(
-                            Color.parseColor("#E8F5E9")
-                    )
-            );
-
-        } else {
-
-            chipStatus.setText("ABIERTA");
-
-            chipStatus.setTextColor(
-                    Color.parseColor("#C62828")
-            );
-
-            chipStatus.setChipBackgroundColor(
-                    ColorStateList.valueOf(
-                            Color.parseColor("#FDECEC")
-                    )
-            );
-        }
-    }
-
-    private void loadImages() {
-
-        apiService.getImages(recordId)
-                .enqueue(new Callback<List<RecordImageDTO>>() {
-
-                    @Override
-                    public void onResponse(
-                            Call<List<RecordImageDTO>> call,
-                            Response<List<RecordImageDTO>> response
-                    ) {
-
-                        if (response.isSuccessful()
-                                && response.body() != null) {
-
-                            List<RecordImageDTO> images =
-                                    response.body();
-
-                            rvImages.setLayoutManager(
-                                    new LinearLayoutManager(
-                                            RecordDetailActivity.this,
-                                            LinearLayoutManager.HORIZONTAL,
-                                            false
-                                    )
-                            );
-
-                            rvImages.setAdapter(
-                                    new RecordImageAdapter(images)
-                            );
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(
-                            Call<List<RecordImageDTO>> call,
-                            Throwable t
-                    ) {
-
-                        t.printStackTrace();
-                    }
-                });
-    }
-
-    private void toggleStatus() {
-
-        if (record == null) {
-            return;
-        }
-
-        String previousStatus = record.getStatus();
-
-        boolean closed = "CERRADA".equalsIgnoreCase(
-                previousStatus
-        );
-
-        if (closed) {
-
-            record.setStatus("ABIERTA");
-
-        } else {
-
-            record.setStatus("CERRADA");
-        }
-
-        // UI instantánea
-
-        updateStatusUI();
-
-        Map<String, String> body = new HashMap<>();
-
-        body.put(
-                "status",
-                record.getStatus()
-        );
-
-        apiService.updateRecordStatus(
-                record.getId(),
-                body
-        ).enqueue(new Callback<RecordDTO>() {
-
-            @Override
-            public void onResponse(
-                    Call<RecordDTO> call,
-                    Response<RecordDTO> response
-            ) {
-
-                if (response.isSuccessful()
-                        && response.body() != null) {
-
-                    record = response.body();
-
-                } else {
-
-                    // revertir cambios si backend falla
-
-                    record.setStatus(previousStatus);
-
-                    updateStatusUI();
-                }
-            }
-
-            @Override
-            public void onFailure(
-                    Call<RecordDTO> call,
-                    Throwable t
-            ) {
-
-                t.printStackTrace();
-
-                // revertir cambios si falla red
-
-                record.setStatus(previousStatus);
-
-                updateStatusUI();
-            }
-        });
-    }
-
-    private String buildStructuredDataText() {
-
-        StructuredData data = record.getStructuredData();
-
-        if (data == null || data.isEmpty()) {
-
-            return "Sin datos estructurados";
-        }
-
-        StringBuilder builder = new StringBuilder();
-
-        if (data.getCompany() != null) {
-
-            builder.append("Empresa: ")
-                    .append(data.getCompany())
-                    .append("\n");
-        }
-
-        if (data.getSubject() != null) {
-
-            builder.append("Asunto: ")
-                    .append(data.getSubject())
-                    .append("\n");
-        }
-
-        if (data.getQuantity() != null) {
-
-            builder.append("Cantidad: ")
-                    .append(data.getQuantity());
-
-            if (data.getUnit() != null) {
-
-                builder.append(" ")
-                        .append(data.getUnit());
-            }
-
-            builder.append("\n");
-        }
-
-        if (data.getDueDate() != null) {
-
-            builder.append("Fecha límite: ")
-                    .append(data.getDueDate())
-                    .append("\n");
-        }
-
-        if (data.getPercentage() != null) {
-
-            builder.append("Porcentaje: ")
-                    .append(data.getPercentage())
-                    .append("%\n");
-        }
-
-        if (data.getPrice() != null) {
-
-            builder.append("Precio: ")
-                    .append(data.getPrice())
-                    .append(" €\n");
-        }
-
-        return builder.toString().trim();
     }
 }

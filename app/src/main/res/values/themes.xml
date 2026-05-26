@@ -1,9 +1,42 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Base application theme para Modo Claro -->
     <style name="Base.Theme.BuildLogAI" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Colores principales -->
+        <item name="colorPrimary">#6750A4</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#EADDFF</item>
+        <item name="colorOnPrimaryContainer">#21005D</item>
+
+        <!-- Colores de Superficie y Fondo -->
+        <item name="android:colorBackground">#F5F5F5</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorSurfaceVariant">#E7E0EC</item>
+        <item name="colorOnSurface">#1C1B1F</item>
+        <item name="colorOnSurfaceVariant">#49454F</item>
+
+        <!-- Outline y Bordes -->
+        <item name="colorOutline">#79747E</item>
+        <item name="colorOutlineVariant">#C4C7C5</item>
     </style>
 
     <style name="Theme.BuildLogAI" parent="Base.Theme.BuildLogAI" />
+
+    <style name="Theme.BuildLogAI.Splash" parent="Theme.SplashScreen">
+
+        <!-- Fondo -->
+        <item name="windowSplashScreenBackground">
+            @color/splash_background
+        </item>
+
+        <!-- Logo -->
+        <item name="windowSplashScreenAnimatedIcon">
+            @drawable/logo
+        </item>
+
+        <!-- Tema final -->
+        <item name="postSplashScreenTheme">
+            @style/Theme.BuildLogAI
+        </item>
+
+    </style>
 </resources>

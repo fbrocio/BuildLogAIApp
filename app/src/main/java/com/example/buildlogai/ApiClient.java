@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    public static final String BASE_URL = "http://192.168.1.141:8080";
+    public static final String BASE_URL = "https://buildlogai-api.onrender.com/";
     private static Retrofit retrofit;
 
     public static Retrofit getClient(Context context) {
