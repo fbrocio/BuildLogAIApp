@@ -4,8 +4,6 @@ import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.gson.annotations.SerializedName;
-
 public class RecordDTO implements Parcelable {
 
     private Long id;
@@ -16,10 +14,7 @@ public class RecordDTO implements Parcelable {
     private String status;
     private StructuredData structuredData;
 
-    @SerializedName("username")
-    private String authorName;
-
-    @SerializedName("created_at")
+    private UserResponse createdBy;
     private String createdAt;
     
     private transient Uri localImageUri;
@@ -36,7 +31,7 @@ public class RecordDTO implements Parcelable {
         type = in.readString();
         status = in.readString();
         structuredData = in.readParcelable(StructuredData.class.getClassLoader());
-        authorName = in.readString();
+        createdBy = in.readParcelable(UserResponse.class.getClassLoader());
         createdAt = in.readString();
     }
 
@@ -62,7 +57,7 @@ public class RecordDTO implements Parcelable {
         dest.writeString(type);
         dest.writeString(status);
         dest.writeParcelable(structuredData, flags);
-        dest.writeString(authorName);
+        dest.writeParcelable(createdBy, flags);
         dest.writeString(createdAt);
     }
 
@@ -129,12 +124,12 @@ public class RecordDTO implements Parcelable {
         this.structuredData = structuredData;
     }
 
-    public String getAuthorName() {
-        return authorName;
+    public UserResponse getCreatedBy() {
+        return createdBy;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    public void setCreatedBy(UserResponse createdBy) {
+        this.createdBy = createdBy;
     }
 
     public String getCreatedAt() {

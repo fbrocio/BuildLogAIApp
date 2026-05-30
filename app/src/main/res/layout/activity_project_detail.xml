@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="?android:attr/colorBackground"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -39,6 +40,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:layout_marginEnd="12dp"
             android:text="@string/project_name_placeholder"
             android:textColor="?attr/colorOnSurface"
             android:textSize="20sp"
@@ -113,6 +115,7 @@
         android:minHeight="56dp"
         android:textAllCaps="false"
         android:textSize="16sp"
+        android:text="Generar informe"
         app:icon="@drawable/ic_report"
         app:iconPadding="12dp"
         app:iconSize="24dp"
@@ -169,7 +172,7 @@
             app:chipBackgroundColor="?attr/colorSurface"
             app:chipStrokeColor="@color/chip_incidencia"
             app:chipStrokeWidth="2dp"
-            android:textColor="@color/chip_incidencia" />
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipPendiente"
@@ -181,7 +184,7 @@
             app:chipBackgroundColor="?attr/colorSurface"
             app:chipStrokeColor="@color/chip_pendiente"
             app:chipStrokeWidth="2dp"
-            android:textColor="@color/chip_pendiente" />
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipAvance"
@@ -193,7 +196,7 @@
             app:chipBackgroundColor="?attr/colorSurface"
             app:chipStrokeColor="@color/chip_avance"
             app:chipStrokeWidth="2dp"
-            android:textColor="@color/chip_avance" />
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
     </com.google.android.material.chip.ChipGroup>
 
@@ -209,7 +212,8 @@
         app:layout_constraintTop_toBottomOf="@id/chipGroupFilters"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
     <!-- EMPTY STATE -->
     <LinearLayout
@@ -252,6 +256,7 @@
         app:backgroundTint="?attr/colorPrimary"
         app:tint="?attr/colorOnPrimary"
         android:layout_margin="16dp"
+        android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

@@ -1,18 +1,15 @@
 package com.example.buildlogai.adapter;
 
 import android.content.Intent;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.buildlogai.R;
-import com.example.buildlogai.activities.EditRecordActivity;
 import com.example.buildlogai.activities.ValidationActivity;
 import com.example.buildlogai.model.RecordDTO;
 import com.example.buildlogai.model.StructuredData;
@@ -301,8 +298,8 @@ public class RecordAdapter
 
     private String buildMeta (RecordDTO record) {
         String author =
-                record.getAuthorName() != null
-                ?record.getAuthorName()
+                record.getCreatedBy().getName() != null
+                ?record.getCreatedBy().getName()
                         :"Usuario";
         String relativeDate =
                 formatRelativeTime(record.getCreatedAt());

@@ -2,7 +2,7 @@
     <!-- Base application theme para Modo Claro -->
     <style name="Base.Theme.BuildLogAI" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Colores principales -->
-        <item name="colorPrimary">#6750A4</item>
+        <item name="colorPrimary">#846A95</item>
         <item name="colorOnPrimary">#FFFFFF</item>
         <item name="colorPrimaryContainer">#EADDFF</item>
         <item name="colorOnPrimaryContainer">#21005D</item>
@@ -15,7 +15,7 @@
         <item name="colorOnSurfaceVariant">#49454F</item>
 
         <!-- Outline y Bordes -->
-        <item name="colorOutline">#79747E</item>
+        <item name="colorOutline">#000000</item>
         <item name="colorOutlineVariant">#C4C7C5</item>
     </style>
 

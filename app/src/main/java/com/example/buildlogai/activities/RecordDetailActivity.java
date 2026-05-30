@@ -121,7 +121,7 @@ public class RecordDetailActivity extends AppCompatActivity {
         tvTitle.setText(record.getTitle());
         tvDescription.setText(record.getDescription());
         
-        String author = record.getAuthorName()!= null ? record.getAuthorName() :"Usuario";
+        String author = record.getCreatedBy()!= null ? record.getCreatedBy().getName() :"Usuario";
         tvCreatedBy.setText("👤 Por " + author);
         tvDate.setText("🕒 " + formatDetailDate(record.getCreatedAt()));
 

@@ -83,21 +83,23 @@ public class ValidationActivity extends AppCompatActivity {
                         apiService.saveRecord(record).enqueue(new Callback<RecordDTO>() {
                             @Override
                             public void onResponse(Call<RecordDTO> call, Response<RecordDTO> response) {
-                                if (response.isSuccessful() && response.body() != null) {
+                                if (response.isSuccessful()) {
 
-                                    RecordDTO savedRecord = response.body();
+                                    Toast.makeText(
+                                            ValidationActivity.this,
+                                            "Registro aceptado",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
 
-                                    Long recordId = savedRecord.getId();
+                                    records.remove(position);
+                                    adapter.notifyItemRemoved(position);
 
-                                    Intent intent =
-                                            new Intent(ValidationActivity.this,
-                                                    RecordDetailActivity.class);
-
-                                    intent.putExtra("RECORD_ID", recordId);
-
-                                    startActivity(intent);
-
-                                    finish();
+                                    if (records.isEmpty()) {
+                                        Intent intent = new Intent(ValidationActivity.this, ProjectDetailActivity.class);
+                                        intent.putExtra("PROJECT_ID", projectId);
+                                        startActivity(intent);
+                                        finish();
+                                    }
                                 }
                             }
 
@@ -106,22 +108,8 @@ public class ValidationActivity extends AppCompatActivity {
                                 Log.e("API", "Error", t);
                             }
                         });
-                        // 2. Actualizar UI
-                        records.remove(position);
-                        adapter.notifyItemRemoved(position);
 
-                        if (records.isEmpty()) {
-                            Intent intent = new Intent(ValidationActivity.this, ProjectDetailActivity.class);
-                            intent.putExtra("PROJECT_ID", projectId);
 
-                            // Limpia la pila de actividades
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                            startActivity(intent);
-                            finish();
-                        }
-
-                        // 3. Feedback
                         Toast.makeText(ValidationActivity.this, "Registro aceptado", Toast.LENGTH_SHORT).show();
                     }
 
@@ -168,10 +156,5 @@ public class ValidationActivity extends AppCompatActivity {
             tvContent.setText(record.getDescription());
         }
 
-        record = (RecordDTO) getIntent().getSerializableExtra("record");
-
-        if (record != null) {
-            tvContent.setText(record.getDescription());
-        }
     }
 }
