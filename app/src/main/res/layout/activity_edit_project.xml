@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="?android:attr/colorBackground">
 
     <!-- BOTÓN VOLVER -->
@@ -29,6 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Editar Proyecto"
+        android:padding="16dp"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="?attr/colorOnSurface"
@@ -185,14 +187,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveProject"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="60dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:text="Guardar Cambios"
             app:backgroundTint="?attr/colorPrimary"
             android:textColor="?attr/colorOnPrimary"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false"
+
+            app:cornerRadius="16dp"
+            app:elevation="4dp"/>
 
     </LinearLayout>
 

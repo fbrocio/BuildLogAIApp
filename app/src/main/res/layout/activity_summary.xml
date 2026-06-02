@@ -73,14 +73,18 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnDownload"
         android:layout_width="0dp"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:text="@string/summary_download"
         android:textAllCaps="false"
         app:backgroundTint="?attr/colorPrimary"
         android:textColor="?attr/colorOnPrimary"
         android:layout_margin="16dp"
+        android:textStyle="bold"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cornerRadius="16dp"
+        app:elevation="4dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

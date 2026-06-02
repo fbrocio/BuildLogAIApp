@@ -112,7 +112,7 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:minHeight="56dp"
+        android:minHeight="60dp"
         android:textAllCaps="false"
         android:textSize="16sp"
         android:text="Generar informe"
@@ -124,7 +124,9 @@
         app:tint="?attr/colorOnPrimary"
         style="@style/Widget.MaterialComponents.Button"
         app:layout_constraintTop_toBottomOf="@id/layoutProjectActions"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:cornerRadius="16dp"
+        app:elevation="4dp"/>
 
     <!-- BUSCADOR -->
     <com.google.android.material.textfield.TextInputLayout

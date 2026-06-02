@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/colorBackground">
+
 
     <!-- HEADER -->
     <LinearLayout
@@ -44,6 +46,28 @@
     </LinearLayout>
 
     <!-- CONTENIDO -->
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleMode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnModeTopic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Por tema" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnModeDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Por fecha" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
     <LinearLayout
         android:id="@+id/layoutContent"
         android:layout_width="0dp"
@@ -78,23 +102,13 @@
                 android:inputType="text"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- DIVIDER -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="o"
-            android:textSize="16sp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="center"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:alpha="0.6"/>
 
         <!-- FECHA -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Fecha"
+            android:layout_marginTop="40dp"
             android:textStyle="bold"
             android:textSize="16sp"
             android:textColor="?attr/colorOnSurface"/>
@@ -125,19 +139,25 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGenerate"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_margin="24dp"
         android:text="Generar informe"
         android:textAllCaps="false"
         android:minHeight="56dp"
         app:backgroundTint="?attr/colorPrimary"
         android:textColor="?attr/colorOnPrimary"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:icon="@drawable/ic_report"
         app:iconPadding="12dp"
         app:iconTint="?attr/colorOnPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:cornerRadius="16dp"
+        app:elevation="4dp"
+
+        />
 
     <ProgressBar
         android:id="@+id/progressBar"

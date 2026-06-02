@@ -60,13 +60,17 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnExportPdf"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:layout_margin="16dp"
         android:text="Exportar PDF"
         android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textSize="16sp"
         app:icon="@android:drawable/ic_menu_save"
         app:backgroundTint="?attr/colorPrimary"
         android:textColor="?attr/colorOnPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cornerRadius="16dp"
+        app:elevation="4dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

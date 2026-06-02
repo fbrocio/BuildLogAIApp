@@ -17,6 +17,7 @@ import com.example.buildlogai.ApiClient;
 import com.example.buildlogai.model.ReportRequestDTO;
 import com.example.buildlogai.model.ReportResponseDTO;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
@@ -39,6 +40,10 @@ public class GenerateReportActivity extends AppCompatActivity {
     private String selectedDate = null;
     private ApiService apiService;
     private ProgressBar progressBar;
+
+    private MaterialButtonToggleGroup toggle;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +69,7 @@ public class GenerateReportActivity extends AppCompatActivity {
 
         tvSelectedDate = findViewById(R.id.tvSelectedDate);
         progressBar = findViewById(R.id.progressBar);
+        toggle = findViewById(R.id.toggleMode);
     }
 
     private void setupListeners() {
@@ -73,6 +79,29 @@ public class GenerateReportActivity extends AppCompatActivity {
         btnSelectDate.setOnClickListener(v -> openDatePicker());
 
         btnGenerate.setOnClickListener(v -> generateReport());
+
+        toggle.check(R.id.btnModeTopic);
+
+        btnSelectDate.setEnabled(false);
+
+        toggle.addOnButtonCheckedListener(
+                (group, checkedId, isChecked) -> {
+
+                    if (!isChecked) return;
+
+                    if (checkedId == R.id.btnModeTopic) {
+
+                        etTopic.setEnabled(true);
+
+                        btnSelectDate.setEnabled(false);
+
+                    } else {
+
+                        etTopic.setEnabled(false);
+
+                        btnSelectDate.setEnabled(true);
+                    }
+                });
     }
 
     private void openDatePicker() {

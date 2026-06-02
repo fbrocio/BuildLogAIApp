@@ -177,11 +177,13 @@
             android:id="@+id/btnFinish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="56dp"
+            android:minHeight="60dp"
             style="@style/Widget.MaterialComponents.Button"
             android:text="@string/record_button_finish"
             app:backgroundTint="?attr/colorPrimary"
-            android:textColor="?attr/colorOnPrimary" />
+            android:textColor="?attr/colorOnPrimary"
+            app:cornerRadius="16dp"
+            app:elevation="4dp"/>
 
     </LinearLayout>
 
