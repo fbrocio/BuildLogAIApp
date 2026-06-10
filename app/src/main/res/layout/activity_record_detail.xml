@@ -125,52 +125,7 @@
                     android:layout_marginBottom="20dp"
                     android:background="?attr/colorOutlineVariant"/>
 
-                <!-- FICHA TÉCNICA -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ficha Técnica"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:textColor="?attr/colorOnSurface"/>
 
-                <TableLayout
-                    android:id="@+id/tableStructuredData"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:stretchColumns="1">
-
-                    <TableRow android:id="@+id/rowCompany" android:paddingVertical="4dp">
-                        <TextView android:text="Empresa:" android:textStyle="bold" android:textColor="?attr/colorOnSurfaceVariant" android:textSize="14sp" />
-                        <TextView android:id="@+id/tvTableCompany" android:layout_marginStart="16dp" android:textColor="?attr/colorOnSurface" android:textSize="14sp" />
-                    </TableRow>
-
-                    <TableRow android:id="@+id/rowSubject" android:paddingVertical="4dp">
-                        <TextView android:text="Asunto:" android:textStyle="bold" android:textColor="?attr/colorOnSurfaceVariant" android:textSize="14sp" />
-                        <TextView android:id="@+id/tvTableSubject" android:layout_marginStart="16dp" android:textColor="?attr/colorOnSurface" android:textSize="14sp" />
-                    </TableRow>
-
-                    <TableRow android:id="@+id/rowQuantity" android:paddingVertical="4dp">
-                        <TextView android:text="Cantidad:" android:textStyle="bold" android:textColor="?attr/colorOnSurfaceVariant" android:textSize="14sp" />
-                        <TextView android:id="@+id/tvTableQuantity" android:layout_marginStart="16dp" android:textColor="?attr/colorOnSurface" android:textSize="14sp" />
-                    </TableRow>
-
-                    <TableRow android:id="@+id/rowDueDate" android:paddingVertical="4dp">
-                        <TextView android:text="Fecha Límite:" android:textStyle="bold" android:textColor="?attr/colorOnSurfaceVariant" android:textSize="14sp" />
-                        <TextView android:id="@+id/tvTableDueDate" android:layout_marginStart="16dp" android:textColor="?attr/colorOnSurface" android:textSize="14sp" />
-                    </TableRow>
-
-                    <TableRow android:id="@+id/rowPercentage" android:paddingVertical="4dp">
-                        <TextView android:text="Porcentaje:" android:textStyle="bold" android:textColor="?attr/colorOnSurfaceVariant" android:textSize="14sp" />
-                        <TextView android:id="@+id/tvTablePercentage" android:layout_marginStart="16dp" android:textColor="?attr/colorOnSurface" android:textSize="14sp" />
-                    </TableRow>
-
-                    <TableRow android:id="@+id/rowPrice" android:paddingVertical="4dp">
-                        <TextView android:text="Precio:" android:textStyle="bold" android:textColor="?attr/colorOnSurfaceVariant" android:textSize="14sp" />
-                        <TextView android:id="@+id/tvTablePrice" android:layout_marginStart="16dp" android:textColor="?attr/colorOnSurface" android:textSize="14sp" />
-                    </TableRow>
-                </TableLayout>
 
                 <TextView
                     android:id="@+id/tvNoStructuredData"
@@ -182,13 +137,6 @@
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:alpha="0.6"
                     android:textStyle="italic"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginBottom="20dp"
-                    android:background="?attr/colorOutlineVariant"/>
 
                 <!-- METADATA -->
                 <TextView

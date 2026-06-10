@@ -32,7 +32,6 @@ public class EditRecordActivity extends AppCompatActivity {
 
     private ImageView btnBack;
     private EditText etTitle, etContent;
-    private EditText etCompany, etSubject, etQuantity, etUnit, etPrice;
     private MaterialButton btnCancel, btnSave;
     private RecyclerView rvEditImages;
     
@@ -68,13 +67,6 @@ public class EditRecordActivity extends AppCompatActivity {
         etTitle = findViewById(R.id.etTitle);
         etContent = findViewById(R.id.etContent);
         
-        // Campos StructuredData
-        etCompany = findViewById(R.id.etCompany);
-        etSubject = findViewById(R.id.etSubject);
-        etQuantity = findViewById(R.id.etQuantity);
-        etUnit = findViewById(R.id.etUnit);
-        etPrice = findViewById(R.id.etPrice);
-        
         rvEditImages = findViewById(R.id.rvEditImages);
         rvEditImages.setLayoutManager(new GridLayoutManager(this, 3));
         
@@ -85,15 +77,7 @@ public class EditRecordActivity extends AppCompatActivity {
     private void populateFields() {
         etTitle.setText(record.getTitle());
         etContent.setText(record.getDescription());
-        
-        StructuredData sd = record.getStructuredData();
-        if (sd != null) {
-            etCompany.setText(sd.getCompany());
-            etSubject.setText(sd.getSubject());
-            if (sd.getQuantity() != null) etQuantity.setText(String.valueOf(sd.getQuantity()));
-            etUnit.setText(sd.getUnit());
-            if (sd.getPrice() != null) etPrice.setText(String.valueOf(sd.getPrice()));
-        }
+
     }
 
     private void setupListeners() {
@@ -144,26 +128,6 @@ public class EditRecordActivity extends AppCompatActivity {
         record.setTitle(newTitle);
         record.setDescription(newContent);
 
-        // Actualizar StructuredData
-        StructuredData sd = record.getStructuredData();
-        if (sd == null) sd = new StructuredData();
-        
-        sd.setCompany(etCompany.getText().toString().trim());
-        sd.setSubject(etSubject.getText().toString().trim());
-        sd.setUnit(etUnit.getText().toString().trim());
-        
-        try {
-            String q = etQuantity.getText().toString().trim();
-            sd.setQuantity(q.isEmpty() ? null : Double.parseDouble(q));
-            
-            String p = etPrice.getText().toString().trim();
-            sd.setPrice(p.isEmpty() ? null : Double.parseDouble(p));
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Error en formato numérico", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        
-        record.setStructuredData(sd);
 
         apiService.saveRecord(record).enqueue(new Callback<RecordDTO>() {
             @Override

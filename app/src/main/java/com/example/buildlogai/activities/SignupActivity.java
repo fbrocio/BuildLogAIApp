@@ -81,7 +81,17 @@ public class SignupActivity extends AppCompatActivity {
                             "Usuario creado: " + response.body().getEmail(),
                             Toast.LENGTH_SHORT).show();
 
-                    startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+                    Intent intent = new Intent(
+                            SignupActivity.this,
+                            VerifyEmailActivity.class
+                    );
+
+                    intent.putExtra(
+                            "email",
+                            response.body().getEmail()
+                    );
+
+                    startActivity(intent);
                     finish();
 
                 } else {

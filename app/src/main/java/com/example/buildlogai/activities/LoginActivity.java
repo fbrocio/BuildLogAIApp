@@ -82,14 +82,36 @@ public class LoginActivity extends AppCompatActivity {
                     // Ir a siguiente pantalla (ej: ProjectListActivity)
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
+                } else if (response.code() == 403) {
+
+                    Intent intent = new Intent(
+                            LoginActivity.this,
+                            VerifyEmailActivity.class
+                    );
+
+                    intent.putExtra("email", email);
+
+                    startActivity(intent);
+
                 } else {
-                    Toast.makeText(LoginActivity.this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show();
+
+                    Toast.makeText(
+                            LoginActivity.this,
+                            "Credenciales incorrectas",
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
             }
 
             @Override
             public void onFailure(Call<AuthResponse> call, Throwable t) {
-                Toast.makeText(LoginActivity.this, "Error de red", Toast.LENGTH_SHORT).show();
+                Toast.makeText(
+                        LoginActivity.this,
+                        t.getMessage(),
+                        Toast.LENGTH_LONG
+                ).show();
+
+                t.printStackTrace();
             }
         });
     }

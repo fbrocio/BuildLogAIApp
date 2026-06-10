@@ -54,12 +54,6 @@ public class RecordDetailActivity extends AppCompatActivity {
     private FloatingActionButton btnAddImage;
     private RecyclerView rvImages;
 
-    // Tabla de datos estructurados
-    private TableLayout tableStructuredData;
-    private View rowCompany, rowSubject, rowQuantity, rowDueDate, rowPercentage, rowPrice;
-    private TextView tvTableCompany, tvTableSubject, tvTableQuantity, tvTableDueDate, tvTablePercentage, tvTablePrice;
-    private TextView tvNoStructuredData;
-
     private ApiService apiService;
     private RecordDTO record;
     private Long recordId;
@@ -98,22 +92,7 @@ public class RecordDetailActivity extends AppCompatActivity {
         rvImages = findViewById(R.id.rvImages);
         btnAddImage = findViewById(R.id.btnAddImage);
 
-        tableStructuredData = findViewById(R.id.tableStructuredData);
-        tvNoStructuredData = findViewById(R.id.tvNoStructuredData);
-        
-        rowCompany = findViewById(R.id.rowCompany);
-        rowSubject = findViewById(R.id.rowSubject);
-        rowQuantity = findViewById(R.id.rowQuantity);
-        rowDueDate = findViewById(R.id.rowDueDate);
-        rowPercentage = findViewById(R.id.rowPercentage);
-        rowPrice = findViewById(R.id.rowPrice);
 
-        tvTableCompany = findViewById(R.id.tvTableCompany);
-        tvTableSubject = findViewById(R.id.tvTableSubject);
-        tvTableQuantity = findViewById(R.id.tvTableQuantity);
-        tvTableDueDate = findViewById(R.id.tvTableDueDate);
-        tvTablePercentage = findViewById(R.id.tvTablePercentage);
-        tvTablePrice = findViewById(R.id.tvTablePrice);
     }
 
     private void populateUI() {
@@ -124,37 +103,8 @@ public class RecordDetailActivity extends AppCompatActivity {
         String author = record.getCreatedBy()!= null ? record.getCreatedBy().getName() :"Usuario";
         tvCreatedBy.setText("👤 Por " + author);
         tvDate.setText("🕒 " + formatDetailDate(record.getCreatedAt()));
-
-        populateStructuredDataTable();
     }
 
-    private void populateStructuredDataTable() {
-        StructuredData data = record.getStructuredData();
-
-        if (data == null) {
-            tableStructuredData.setVisibility(View.GONE);
-            tvNoStructuredData.setVisibility(View.VISIBLE);
-            return;
-        }
-
-        tableStructuredData.setVisibility(View.VISIBLE);
-        tvNoStructuredData.setVisibility(View.GONE);
-
-        // Mapeo de campos a la tabla (con efecto gris si están vacíos)
-        setupTableRow(rowCompany, tvTableCompany, data.getCompany());
-        setupTableRow(rowSubject, tvTableSubject, data.getSubject());
-        
-        String qty = (data.getQuantity() != null) ? data.getQuantity() + " " + (data.getUnit() != null ? data.getUnit() : "") : null;
-        setupTableRow(rowQuantity, tvTableQuantity, qty);
-        
-        setupTableRow(rowDueDate, tvTableDueDate, data.getDueDate());
-        
-        String pct = (data.getPercentage() != null) ? data.getPercentage() + "%" : null;
-        setupTableRow(rowPercentage, tvTablePercentage, pct);
-        
-        String price = (data.getPrice() != null) ? data.getPrice() + " €" : null;
-        setupTableRow(rowPrice, tvTablePrice, price);
-    }
 
     /**
      * Configura visualmente una fila de la tabla.

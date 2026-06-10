@@ -14,6 +14,7 @@ import com.example.buildlogai.model.ReportRequestDTO;
 import com.example.buildlogai.model.ReportResponseDTO;
 import com.example.buildlogai.model.UserRequest;
 import com.example.buildlogai.model.UserResponse;
+import com.example.buildlogai.model.VerifyRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -124,6 +125,16 @@ public interface ApiService {
     Call<ImageResponse> uploadImage(
             @Path("id") Long recordId,
             @Part MultipartBody.Part image
+    );
+
+    @POST("/api/users/verify")
+    Call<String> verifyEmail(
+            @Body VerifyRequest request
+    );
+
+    @POST("api/users/resend-verification")
+    Call<String> resendVerification(
+            @Query("email") String email
     );
 
 }

@@ -2,6 +2,10 @@ package com.example.buildlogai;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+import android.widget.Toast;
+
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -11,6 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     public static final String BASE_URL = "https://buildlogai-api.onrender.com/";
+
     private static Retrofit retrofit;
 
     public static Retrofit getClient(Context context) {
@@ -18,10 +23,14 @@ public class ApiClient {
         if (retrofit == null) {
 
             OkHttpClient client = new OkHttpClient.Builder()
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(180, TimeUnit.SECONDS)
+                    .writeTimeout(180, TimeUnit.SECONDS)
                     .addInterceptor(chain -> {
 
-                        // 🔹 Leer token EN CADA REQUEST (clave)
-                        SharedPreferences prefs = context.getSharedPreferences("app", Context.MODE_PRIVATE);
+                        SharedPreferences prefs =
+                                context.getSharedPreferences("app", Context.MODE_PRIVATE);
+
                         String token = prefs.getString("token", null);
 
                         Request.Builder builder = chain.request().newBuilder();

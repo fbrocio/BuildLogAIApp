@@ -25,6 +25,8 @@
         <activity android:name=".activities.ReportResultActivity"/>
         <activity android:name=".activities.RecordDetailActivity"/>
         <activity
+            android:name=".activities.VerifyEmailActivity"/>
+        <activity
             android:name=".activities.ImageGalleryActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"/>
 
