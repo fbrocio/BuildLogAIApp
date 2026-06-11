@@ -42,6 +42,8 @@ public class EditProjectActivity extends AppCompatActivity {
 
         String projectName =
                 getIntent().getStringExtra("PROJECT_NAME");
+        String projectDescription=
+                getIntent().getStringExtra("PROJECT_DESCRIPTION");
 
         apiService =
                 ApiClient.getClient(this)
@@ -64,6 +66,7 @@ public class EditProjectActivity extends AppCompatActivity {
         // PRECARGAR DATOS
 
         etProjectName.setText(projectName);
+        etProjectDescription.setText(projectDescription);
 
         // BACK
 

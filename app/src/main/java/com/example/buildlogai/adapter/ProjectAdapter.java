@@ -54,6 +54,7 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.ViewHold
             Intent intent = new Intent(v.getContext(), ProjectDetailActivity.class);
             intent.putExtra("PROJECT_ID", project.getId());
             intent.putExtra("PROJECT_NAME", project.getName());
+            intent.putExtra("PROJECT_DESCRIPTION", project.getDescription());
             v.getContext().startActivity(intent);
         });
     }

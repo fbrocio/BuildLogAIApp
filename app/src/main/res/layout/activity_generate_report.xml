@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:attr/colorBackground">
+    android:background="?android:attr/colorBackground"
+    android:fitsSystemWindows="true">
 
     <!-- HEADER -->
     <LinearLayout
@@ -54,82 +55,97 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- TEMA -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tema"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="?attr/colorOnSurface"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTopic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Ej: luminarias, ventanas..."
-                android:textColor="?attr/colorOnSurface"
-                android:inputType="text"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- DIVIDER -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="o"
-            android:textSize="16sp"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="center"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:alpha="0.6"/>
-
-        <!-- FECHA -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fecha"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="?attr/colorOnSurface"/>
+    <!-- MODO DE GENERACIÓN -->
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggleMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center_horizontal"
+        app:singleSelection="true">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSelectDate"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Seleccionar fecha"
-            android:textAllCaps="false"
-            app:icon="@android:drawable/ic_menu_my_calendar"
-            app:iconTint="?attr/colorPrimary"/>
-
-        <TextView
-            android:id="@+id/tvSelectedDate"
+            android:id="@+id/btnModeTopic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ninguna fecha seleccionada"
-            android:layout_marginTop="8dp"
-            android:textColor="?attr/colorOnSurfaceVariant"
-            android:alpha="0.7"/>
+            android:text="Por tema"/>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnModeDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Por fecha"/>
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <!-- TEMA -->
+    <TextView
+        android:id="@+id/tvTopicLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tema"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="?attr/colorOnSurface"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutTopic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ej: luminarias, ventanas..."
+            android:textColor="?attr/colorOnSurface"
+            android:inputType="text"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- FECHA -->
+    <TextView
+        android:id="@+id/tvDateLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Fecha"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="?attr/colorOnSurface"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSelectDate"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Seleccionar fecha"
+        android:textAllCaps="false"
+        app:icon="@android:drawable/ic_menu_my_calendar"
+        app:iconTint="?attr/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/tvSelectedDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Ninguna fecha seleccionada"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:alpha="0.7"/>
     </LinearLayout>
 
     <!-- BOTÓN GENERAR -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnGenerate"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_margin="24dp"
         android:text="Generar informe"
         android:textAllCaps="false"
-        android:minHeight="56dp"
+        android:minHeight="60dp"
         app:backgroundTint="?attr/colorPrimary"
         android:textColor="?attr/colorOnPrimary"
         app:icon="@drawable/ic_report"
@@ -137,7 +153,9 @@
         app:iconTint="?attr/colorOnPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="16sp"
+        app:cornerRadius="16dp"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

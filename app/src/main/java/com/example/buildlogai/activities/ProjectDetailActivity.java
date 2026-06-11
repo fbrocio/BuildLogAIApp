@@ -1,6 +1,7 @@
 package com.example.buildlogai.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,6 +38,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,16 +64,31 @@ public class ProjectDetailActivity extends AppCompatActivity {
     private ImageButton btnEditProject;
 
     private EditText etSearch;
+    private MaterialSwitch switchDarkMode;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences prefs =
+                getSharedPreferences("app", MODE_PRIVATE);
+
+        boolean darkMode =
+                prefs.getBoolean("dark_mode", false);
+
+        AppCompatDelegate.setDefaultNightMode(
+                darkMode
+                        ? AppCompatDelegate.MODE_NIGHT_YES
+                        : AppCompatDelegate.MODE_NIGHT_NO
+        );
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_detail);
 
         //Recuperamos valores de intent
         this.projectId = getIntent().getLongExtra("PROJECT_ID", -1L);
         String projectName = getIntent().getStringExtra("PROJECT_NAME");
+        String projectDescription = getIntent().getStringExtra("PROJECT_DESCRIPTION");
 
         recyclerView = findViewById(R.id.rvRecords);
         fabRecord = findViewById(R.id.fabRecord);
@@ -82,7 +100,9 @@ public class ProjectDetailActivity extends AppCompatActivity {
         layoutUsers = findViewById(R.id.layoutUsers);
         btnEditProject = findViewById(R.id.btnEditProject);
         etSearch = findViewById(R.id.etSearch);
+        switchDarkMode = findViewById(R.id.switchDarkMode);
 
+        switchDarkMode.setChecked(darkMode);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -127,6 +147,7 @@ public class ProjectDetailActivity extends AppCompatActivity {
                     "PROJECT_NAME",
                     tvProjectName.getText().toString()
             );
+            intent.putExtra("PROJECT_DESCRIPTION", projectDescription);
 
             startActivity(intent);
         });
@@ -156,6 +177,23 @@ public class ProjectDetailActivity extends AppCompatActivity {
 
         // Inicializar visuales de los chips
         updateChipVisuals();
+
+        switchDarkMode.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+
+                    prefs.edit()
+                            .putBoolean(
+                                    "dark_mode",
+                                    isChecked
+                            )
+                            .apply();
+
+                    AppCompatDelegate.setDefaultNightMode(
+                            isChecked
+                                    ? AppCompatDelegate.MODE_NIGHT_YES
+                                    : AppCompatDelegate.MODE_NIGHT_NO
+                    );
+                });
     }
 
     /**

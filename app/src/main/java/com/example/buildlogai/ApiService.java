@@ -109,13 +109,13 @@ public interface ApiService {
             @Path("id") Long projectId
     );
 
-    @PUT("projects/{id}")
+    @PUT("api/projects/{id}")
     Call<Void> updateProject(
             @Path("id") Long projectId,
             @Body ProjectRequest request
     );
 
-    @DELETE("projects/{id}")
+    @DELETE("api/projects/{id}")
     Call<Void> deleteProject(
             @Path("id") Long projectId
     );

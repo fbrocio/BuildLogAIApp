@@ -166,12 +166,12 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAccept"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="Aceptar"
                 android:textAllCaps="false"
-                app:cornerRadius="24dp"
+                app:cornerRadius="16dp"
                 app:backgroundTint="?attr/colorPrimary"
                 android:textColor="?attr/colorOnPrimary" />
 

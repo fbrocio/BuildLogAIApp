@@ -18,6 +18,7 @@
         <activity android:name=".activities.SummaryActivity" />
         <activity android:name=".activities.ValidationActivity" />
         <activity android:name=".activities.EditRecordActivity" />
+        <activity android:name=".activities.EditProjectActivity"/>
         <activity android:name=".activities.SignupActivity" />
         <activity android:name=".activities.LoginActivity" />
         <activity android:name=".activities.MainActivity" />
