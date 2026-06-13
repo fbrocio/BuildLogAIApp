@@ -137,4 +137,9 @@ public interface ApiService {
             @Query("email") String email
     );
 
+    @DELETE("api/projects/{projectId}/users/{userId}")
+    Call<Void> removeUserFromProject(
+            @Path("projectId") Long projectId,
+            @Path("userId") Long userId
+    );
 }

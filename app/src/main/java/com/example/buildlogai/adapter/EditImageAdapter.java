@@ -5,29 +5,35 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.buildlogai.R;
+import com.example.buildlogai.model.RecordImageDTO;
 import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.List;
 
-public class GalleryImageAdapter
-        extends RecyclerView.Adapter<GalleryImageAdapter.ViewHolder> {
+public class EditImageAdapter
+        extends RecyclerView.Adapter<EditImageAdapter.ViewHolder> {
 
     private final Context context;
-    private final List<String> images;
+    private final List<RecordImageDTO> images;
+    private final OnDeleteClickListener deleteListener;
 
-    public GalleryImageAdapter(
+    public EditImageAdapter(
             Context context,
-            List<String> images
+            List<RecordImageDTO> images,
+            OnDeleteClickListener deleteListener
     ) {
 
         this.context = context;
         this.images = images;
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -39,7 +45,7 @@ public class GalleryImageAdapter
 
         View view = LayoutInflater.from(context)
                 .inflate(
-                        R.layout.item_gallery_image,
+                        R.layout.item_edit_record_image,
                         parent,
                         false
                 );
@@ -63,13 +69,16 @@ public class GalleryImageAdapter
             int position
     ) {
 
-        String url = images.get(position);
+        RecordImageDTO image = images.get(position);
 
-        Log.d("GALLERY_URL", url);
+        Log.d("GALLERY_URL", image.getImageUrl());
 
         Glide.with(context)
-                .load(url)
-                .into(holder.photoView);
+                .load(image.getImageUrl())
+                .into(holder.imgRecord);
+
+        holder.btnDeleteImage.setOnClickListener(v ->
+                deleteListener.onDeleteClick(image));
     }
 
     @Override
@@ -80,15 +89,24 @@ public class GalleryImageAdapter
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        PhotoView photoView;
+        ImageView imgRecord;
+        ImageButton btnDeleteImage;
 
         public ViewHolder(@NonNull View itemView) {
 
             super(itemView);
 
-            photoView =
-                    itemView.findViewById(R.id.photoView);
+            imgRecord =
+                    itemView.findViewById(R.id.imgRecord);
+
+            btnDeleteImage =
+                    itemView.findViewById(R.id.btnDeleteImage);
         }
     }
+
+    public interface OnDeleteClickListener {
+        void onDeleteClick(RecordImageDTO image);
+    }
+
 
 }

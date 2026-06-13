@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import com.example.buildlogai.R;
 import com.example.buildlogai.model.Project;
 import com.example.buildlogai.adapter.ProjectAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ImageView btnLogout;
     private TextView tvGreeting;
+    private MaterialSwitch switchDarkMode;
 
 
     @Override
@@ -40,9 +43,30 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         btnLogout = findViewById(R.id.btnLogout);
         tvGreeting = findViewById(R.id.tvGreeting);
+        switchDarkMode = findViewById(R.id.switchDarkMode);
         btnLogout.setOnClickListener(v -> logout());
 
         SharedPreferences prefs = getSharedPreferences("app", MODE_PRIVATE);
+
+        boolean darkMode =
+                prefs.getBoolean("dark_mode", false);
+
+        switchDarkMode.setChecked(darkMode);
+
+        switchDarkMode.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+
+                    prefs.edit()
+                            .putBoolean("dark_mode", isChecked)
+                            .apply();
+
+                    AppCompatDelegate.setDefaultNightMode(
+                            isChecked
+                                    ? AppCompatDelegate.MODE_NIGHT_YES
+                                    : AppCompatDelegate.MODE_NIGHT_NO
+                    );
+                }
+        );
 
         String username = prefs.getString("username", "username");
 

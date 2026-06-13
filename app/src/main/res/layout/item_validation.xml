@@ -53,68 +53,6 @@
             android:textSize="14sp"
             tools:text="Han llegado 4 luminarias rotas de ArkosLight." />
 
-        <!-- BLOQUE METADATA -->
-        <LinearLayout
-            android:id="@+id/layoutMetadataContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:background="?attr/colorSurfaceVariant"
-            android:orientation="vertical"
-            android:padding="12dp">
-
-            <!-- HEADER -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Datos detectados"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <!-- ELIMINAR TODO -->
-                <ImageButton
-                    android:id="@+id/btnRemoveMetadata"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Eliminar metadata"
-                    android:padding="6dp"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
-                    app:tint="?attr/colorOnSurfaceVariant" />
-
-            </LinearLayout>
-
-            <!-- LISTA DINÁMICA -->
-            <LinearLayout
-                android:id="@+id/layoutMetadata"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="vertical"/>
-
-            <!-- AÑADIR DATO -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAddMetadata"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Añadir dato"
-                android:textAllCaps="false"
-                android:textColor="?attr/colorPrimary"
-                app:icon="@android:drawable/ic_input_add"
-                app:iconTint="?attr/colorPrimary" />
-
-        </LinearLayout>
-
         <!-- IMAGEN -->
         <LinearLayout
             android:layout_width="match_parent"

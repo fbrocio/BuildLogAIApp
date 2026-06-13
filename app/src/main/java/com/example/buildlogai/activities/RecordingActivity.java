@@ -3,6 +3,8 @@ package com.example.buildlogai.activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.speech.*;
 import android.view.View;
@@ -41,6 +43,7 @@ public class RecordingActivity extends AppCompatActivity {
     private View layoutText;
     private Long projectId;
     private TextView tvTimer;
+    private Button btnRecord;
     private int secondsElapsed = 0;
     private android.os.Handler timerHandler = new android.os.Handler();
 
@@ -66,7 +69,7 @@ public class RecordingActivity extends AppCompatActivity {
 
         // UI
         Button btnFinish = findViewById(R.id.btnFinish);
-        Button btnRecord = findViewById(R.id.btnRecord);
+        btnRecord = findViewById(R.id.btnRecord);
         ImageView btnBack = findViewById(R.id.btnBack);
         tvRecording = findViewById(R.id.tvRecording);
         tvTimer = findViewById(R.id.tvTimer);
@@ -121,6 +124,7 @@ public class RecordingActivity extends AppCompatActivity {
             @Override
             public void onResults(Bundle results) {
 
+                setRecordingState(false);
                 stopTimer();
 
                 ArrayList<String> matches =
@@ -134,12 +138,15 @@ public class RecordingActivity extends AppCompatActivity {
             }
 
             @Override public void onError(int error) {
+                setRecordingState(false);
                 stopTimer();
                 tvRecording.setText("Error de reconocimiento");
             }
 
-            @Override public void onReadyForSpeech(Bundle params) {
+            @Override
+            public void onReadyForSpeech(Bundle params) {
                 tvRecording.setText("Escuchando...");
+                setRecordingState(true);
             }
 
             @Override public void onEndOfSpeech() {}
@@ -172,6 +179,7 @@ public class RecordingActivity extends AppCompatActivity {
         btnFinish.setOnClickListener(v -> {
 
             if (currentMode == InputMode.VOICE) {
+                setRecordingState(false);
                 stopTimer();
                 speechRecognizer.stopListening();
             } else {
@@ -189,6 +197,23 @@ public class RecordingActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
     }
 
+
+    private void setRecordingState(boolean recording) {
+
+        if (recording) {
+            btnRecord.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                            ContextCompat.getColor(this, android.R.color.holo_green_dark)
+                    )
+            );
+        } else {
+            btnRecord.setBackgroundTintList(
+                    ColorStateList.valueOf(
+                            Color.parseColor("#B41100")
+                    )
+            );
+        }
+    }
     private void sendText(String text) {
         tvRecording.setText("Procesando...");
 
@@ -243,6 +268,9 @@ public class RecordingActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        setRecordingState(false);
+
         if (speechRecognizer != null) {
             speechRecognizer.destroy();
         }

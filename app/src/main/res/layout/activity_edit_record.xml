@@ -142,7 +142,7 @@
                         android:minHeight="100dp"
                         tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                         tools:spanCount="3"
-                        tools:listitem="@layout/item_record_image" />
+                        tools:listitem="@layout/item_edit_record_image" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -185,9 +185,12 @@
             android:layout_weight="1"
             android:text="@string/common_save"
             app:backgroundTint="?attr/colorPrimary"
+            android:height="60dp"
             android:textColor="?attr/colorOnPrimary"
             android:layout_marginStart="8dp"
-            android:layout_height="wrap_content"/>
+            android:textSize="16sp"
+            android:layout_height="wrap_content"
+            app:cornerRadius="16dp"/>
 
     </LinearLayout>
 

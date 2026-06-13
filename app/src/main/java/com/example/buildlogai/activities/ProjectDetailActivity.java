@@ -64,8 +64,6 @@ public class ProjectDetailActivity extends AppCompatActivity {
     private ImageButton btnEditProject;
 
     private EditText etSearch;
-    private MaterialSwitch switchDarkMode;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,9 +98,6 @@ public class ProjectDetailActivity extends AppCompatActivity {
         layoutUsers = findViewById(R.id.layoutUsers);
         btnEditProject = findViewById(R.id.btnEditProject);
         etSearch = findViewById(R.id.etSearch);
-        switchDarkMode = findViewById(R.id.switchDarkMode);
-
-        switchDarkMode.setChecked(darkMode);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -177,23 +172,6 @@ public class ProjectDetailActivity extends AppCompatActivity {
 
         // Inicializar visuales de los chips
         updateChipVisuals();
-
-        switchDarkMode.setOnCheckedChangeListener(
-                (buttonView, isChecked) -> {
-
-                    prefs.edit()
-                            .putBoolean(
-                                    "dark_mode",
-                                    isChecked
-                            )
-                            .apply();
-
-                    AppCompatDelegate.setDefaultNightMode(
-                            isChecked
-                                    ? AppCompatDelegate.MODE_NIGHT_YES
-                                    : AppCompatDelegate.MODE_NIGHT_NO
-                    );
-                });
     }
 
     /**
@@ -721,12 +699,7 @@ public class ProjectDetailActivity extends AppCompatActivity {
             );
 
             card.setOnClickListener(v -> {
-
-                Toast.makeText(
-                        this,
-                        user.getName(),
-                        Toast.LENGTH_SHORT
-                ).show();
+                showProjectUsersDialog(users);
             });
 
             layoutUsers.addView(card);
@@ -778,6 +751,10 @@ public class ProjectDetailActivity extends AppCompatActivity {
             tv.setText("+" + remaining);
 
             moreCard.addView(tv);
+
+            moreCard.setOnClickListener(v -> {
+                showProjectUsersDialog(users);
+            });
 
             layoutUsers.addView(moreCard);
         }
@@ -844,6 +821,104 @@ public class ProjectDetailActivity extends AppCompatActivity {
 
         layoutUsers.addView(addButton);
     }
+    private void showProjectUsersDialog(
+            List<UserResponse> users
+    ) {
+
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(this);
+
+        builder.setTitle("Usuarios del proyecto");
+
+        LinearLayout container =
+                new LinearLayout(this);
+
+        container.setOrientation(
+                LinearLayout.VERTICAL
+        );
+
+        int padding = (int) (
+                16 * getResources()
+                        .getDisplayMetrics()
+                        .density
+        );
+
+        container.setPadding(
+                padding,
+                padding,
+                padding,
+                padding
+        );
+
+        builder.setView(container);
+
+        builder.setPositiveButton(
+                "Cerrar",
+                null
+        );
+
+        AlertDialog dialog = builder.create();
+
+        for (UserResponse user : users) {
+
+            LinearLayout row =
+                    new LinearLayout(this);
+
+            row.setOrientation(
+                    LinearLayout.HORIZONTAL
+            );
+
+            row.setGravity(Gravity.CENTER_VERTICAL);
+
+            row.setPadding(
+                    0,
+                    16,
+                    0,
+                    16
+            );
+
+            TextView tvUser =
+                    new TextView(this);
+
+            tvUser.setLayoutParams(
+                    new LinearLayout.LayoutParams(
+                            0,
+                            LinearLayout.LayoutParams.WRAP_CONTENT,
+                            1f
+                    )
+            );
+
+            tvUser.setText(
+                    user.getName()
+                            + " ("
+                            + user.getEmail()
+                            + ")"
+            );
+
+            ImageButton btnDelete =
+                    new ImageButton(this);
+
+            btnDelete.setImageResource(
+                    android.R.drawable.ic_menu_close_clear_cancel
+            );
+
+            btnDelete.setBackground(null);
+
+            btnDelete.setOnClickListener(v -> {
+
+                dialog.dismiss();
+
+                confirmRemoveUser(user);
+            });
+
+            row.addView(tvUser);
+            row.addView(btnDelete);
+
+            container.addView(row);
+        }
+
+        dialog.show();
+    }
     private String getInitials(String name) {
 
         if (name == null || name.isEmpty()) {
@@ -863,5 +938,108 @@ public class ProjectDetailActivity extends AppCompatActivity {
                 parts[0].substring(0,1)
                         + parts[1].substring(0,1)
         ).toUpperCase();
+    }
+
+    private void removeUserFromProject(Long userId) {
+
+        apiService.removeUserFromProject(
+                projectId,
+                userId
+        ).enqueue(new Callback<Void>() {
+
+            @Override
+            public void onResponse(
+                    Call<Void> call,
+                    Response<Void> response
+            ) {
+
+                if (response.isSuccessful()) {
+
+                    Toast.makeText(
+                            ProjectDetailActivity.this,
+                            "Usuario eliminado",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    apiService.getProjectUsers(projectId)
+                            .enqueue(new Callback<List<UserResponse>>() {
+
+                                @Override
+                                public void onResponse(
+                                        Call<List<UserResponse>> call,
+                                        Response<List<UserResponse>> response
+                                ) {
+
+                                    if (response.isSuccessful()
+                                            && response.body() != null) {
+
+                                        renderUsers(response.body());
+
+                                        showProjectUsersDialog(
+                                                response.body()
+                                        );
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(
+                                        Call<List<UserResponse>> call,
+                                        Throwable t
+                                ) {
+
+                                    t.printStackTrace();
+                                }
+                            });
+                } else if (response.code() == 403) {
+
+                    Toast.makeText(
+                            ProjectDetailActivity.this,
+                            "No tienes permiso para eliminar usuarios",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                } else {
+
+                    Toast.makeText(
+                            ProjectDetailActivity.this,
+                            "Error al eliminar usuario",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            }
+
+            @Override
+            public void onFailure(
+                    Call<Void> call,
+                    Throwable t
+            ) {
+
+                Toast.makeText(
+                        ProjectDetailActivity.this,
+                        "Error de red",
+                        Toast.LENGTH_SHORT
+                ).show();
+            }
+        });
+    }
+
+    private void confirmRemoveUser(UserResponse user) {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar usuario")
+                .setMessage(
+                        "¿Eliminar a "
+                                + user.getEmail()
+                                + " del proyecto?"
+                )
+                .setNegativeButton("Cancelar", null)
+                .setPositiveButton(
+                        "Eliminar",
+                        (dialog, which) ->
+                                removeUserFromProject(
+                                        user.getId()
+                                )
+                )
+                .show();
     }
 }

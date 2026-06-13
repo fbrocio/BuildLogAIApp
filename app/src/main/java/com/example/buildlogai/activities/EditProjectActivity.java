@@ -1,5 +1,6 @@
 package com.example.buildlogai.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -193,6 +194,18 @@ public class EditProjectActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT
                             ).show();
 
+                            Intent intent = new Intent(
+                                    EditProjectActivity.this,
+                                    MainActivity.class
+                            );
+
+                            intent.addFlags(
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                            | Intent.FLAG_ACTIVITY_NEW_TASK
+                                            | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            );
+
+                            startActivity(intent);
                             finish();
 
                         } else {
@@ -212,6 +225,12 @@ public class EditProjectActivity extends AppCompatActivity {
                     ) {
 
                         t.printStackTrace();
+
+                        Toast.makeText(
+                                EditProjectActivity.this,
+                                "Error de conexión",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
                 });
     }

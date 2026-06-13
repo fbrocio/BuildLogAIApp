@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.buildlogai.ApiClient;
 import com.example.buildlogai.ApiService;
 import com.example.buildlogai.R;
+import com.example.buildlogai.adapter.EditImageAdapter;
 import com.example.buildlogai.adapter.RecordImageAdapter;
 import com.example.buildlogai.model.RecordDTO;
 import com.example.buildlogai.model.RecordImageDTO;
@@ -104,15 +105,14 @@ public class EditRecordActivity extends AppCompatActivity {
     }
 
     private void updateImagesUI() {
-        // Reutilizamos el adaptador pero podríamos querer uno específico para borrar
-        // Por ahora, implementaremos la lógica de borrado al pulsar en el adaptador si es posible
-        // O simplemente mostramos las imágenes. 
-        RecordImageAdapter adapter = new RecordImageAdapter(recordImages);
+
+        EditImageAdapter adapter = new EditImageAdapter(
+                this,
+                recordImages,
+                this::showDeleteImageDialog
+        );
+
         rvEditImages.setAdapter(adapter);
-        
-        // Nota: Para cumplir "Pulsa una imagen para gestionarla", deberíamos modificar el adaptador 
-        // o añadir un listener. Dado que el adaptador actual abre la galería, 
-        // vamos a dejarlo así por ahora o crear uno nuevo si prefieres.
     }
 
     private void saveChanges() {

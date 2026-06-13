@@ -64,7 +64,7 @@ public class RecordImageAdapter
             imagePath = "/" + imagePath;
         }
 
-        String imageUrl = baseUrl + imagePath;
+        String imageUrl = imagePath;
 
         holder.imageView.setOnClickListener(v -> {
             if (listener != null) {
@@ -73,13 +73,7 @@ public class RecordImageAdapter
                 // Comportamiento por defecto: abrir galería
                 ArrayList<String> urls = new ArrayList<>();
                 for (RecordImageDTO img : images) {
-                    String path = img.getImageUrl();
-                    if (baseUrl.endsWith("/") && path.startsWith("/")) {
-                        path = path.substring(1);
-                    } else if (!baseUrl.endsWith("/") && !path.startsWith("/")) {
-                        path = "/" + path;
-                    }
-                    urls.add(baseUrl + path);
+                    urls.add(img.getImageUrl());
                 }
 
                 Intent intent = new Intent(context, ImageGalleryActivity.class);
