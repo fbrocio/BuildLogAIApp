@@ -41,6 +41,8 @@ public class GenerateReportActivity extends AppCompatActivity {
     private ApiService apiService;
     private ProgressBar progressBar;
     private MaterialButtonToggleGroup toggleMode;
+    private View layoutTopicSection;
+    private View layoutDateSection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,8 @@ public class GenerateReportActivity extends AppCompatActivity {
         tvSelectedDate = findViewById(R.id.tvSelectedDate);
         progressBar = findViewById(R.id.progressBar);
         toggleMode = findViewById(R.id.toggleMode);
+        layoutTopicSection = findViewById(R.id.layoutTopicSection);
+        layoutDateSection = findViewById(R.id.layoutDateSection);
     }
 
     private void setupListeners() {
@@ -78,7 +82,8 @@ public class GenerateReportActivity extends AppCompatActivity {
         btnGenerate.setOnClickListener(v -> generateReport());
         toggleMode.check(R.id.btnModeTopic);
 
-        btnSelectDate.setEnabled(false);
+        layoutTopicSection.setVisibility(View.VISIBLE);
+        layoutDateSection.setVisibility(View.GONE);
 
         toggleMode.addOnButtonCheckedListener(
                 (group, checkedId, isChecked) -> {
@@ -89,19 +94,13 @@ public class GenerateReportActivity extends AppCompatActivity {
 
                     if (checkedId == R.id.btnModeTopic) {
 
-                        etTopic.setEnabled(true);
+                        layoutTopicSection.setVisibility(View.VISIBLE);
+                        layoutDateSection.setVisibility(View.GONE);
 
-                        btnSelectDate.setEnabled(false);
+                    } else if (checkedId == R.id.btnModeDate) {
 
-                        tvSelectedDate.setAlpha(0.4f);
-
-                    } else {
-
-                        etTopic.setEnabled(false);
-
-                        btnSelectDate.setEnabled(true);
-
-                        tvSelectedDate.setAlpha(1f);
+                        layoutTopicSection.setVisibility(View.GONE);
+                        layoutDateSection.setVisibility(View.VISIBLE);
                     }
                 });
     }
@@ -147,28 +146,36 @@ public class GenerateReportActivity extends AppCompatActivity {
             topic = etTopic.getText().toString().trim();
         }
 
-        boolean hasTopic = !topic.isEmpty();
+        int selectedMode = toggleMode.getCheckedButtonId();
 
-        boolean hasDate = selectedDate != null;
+        boolean isTopicMode =
+                selectedMode == R.id.btnModeTopic;
 
-        if (!hasTopic && !hasDate) {
+        if (isTopicMode && topic.isEmpty()) {
 
             Toast.makeText(
                     this,
-                    "Introduce un tema o selecciona una fecha",
+                    "Introduce un tema",
                     Toast.LENGTH_SHORT
             ).show();
 
             return;
         }
 
-        String query;
+        if (!isTopicMode && selectedDate == null) {
 
-        if (hasTopic) {
-            query = topic;
-        } else {
-            query = selectedDate;
+            Toast.makeText(
+                    this,
+                    "Selecciona una fecha",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
         }
+
+        String query = isTopicMode
+                ? topic
+                : selectedDate;
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -196,10 +203,10 @@ public class GenerateReportActivity extends AppCompatActivity {
                             String report =
                                     response.body().getSummary();
 
-                            openReportScreen(report, query);
                             progressBar.setVisibility(View.GONE);
+                            btnGenerate.setText("Generar informe");
 
-                            btnGenerate.setEnabled(true);
+                            openReportScreen(report, query);
 
                             btnGenerate.setText("Generar informe");
 
@@ -210,6 +217,8 @@ public class GenerateReportActivity extends AppCompatActivity {
                                     "Error: " + response.code(),
                                     Toast.LENGTH_LONG
                             ).show();
+                            progressBar.setVisibility(View.GONE);
+                            btnGenerate.setText("Generar informe");
 
                             try {
 
@@ -239,6 +248,8 @@ public class GenerateReportActivity extends AppCompatActivity {
                         if (errorMessage == null) {
                             errorMessage = "Error de conexión";
                         }
+                        progressBar.setVisibility(View.GONE);
+                        btnGenerate.setText("Generar informe");
 
                         Toast.makeText(
                                 GenerateReportActivity.this,
