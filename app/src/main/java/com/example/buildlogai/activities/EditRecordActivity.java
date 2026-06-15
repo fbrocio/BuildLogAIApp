@@ -205,20 +205,75 @@ public class EditRecordActivity extends AppCompatActivity {
     }
 
     private void deleteImage(RecordImageDTO image) {
-        apiService.deleteImage(image.getId()).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(EditRecordActivity.this, "Imagen eliminada", Toast.LENGTH_SHORT).show();
-                    loadImages(); // Recargar
-                }
-            }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                Toast.makeText(EditRecordActivity.this, "Error al eliminar", Toast.LENGTH_SHORT).show();
-            }
-        });
+        Log.d(
+                "DELETE_IMAGE",
+                "Intentando borrar imagen ID: " + image.getId()
+        );
+
+        apiService.deleteImage(image.getId())
+                .enqueue(new Callback<Void>() {
+
+                    @Override
+                    public void onResponse(
+                            Call<Void> call,
+                            Response<Void> response
+                    ) {
+
+                        Log.d(
+                                "DELETE_IMAGE",
+                                "Código respuesta: " + response.code()
+                        );
+
+                        if (response.isSuccessful()) {
+
+                            Log.d(
+                                    "DELETE_IMAGE",
+                                    "Imagen eliminada correctamente"
+                            );
+
+                            Toast.makeText(
+                                    EditRecordActivity.this,
+                                    "Imagen eliminada",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            loadImages();
+
+                        } else {
+
+                            Log.e(
+                                    "DELETE_IMAGE",
+                                    "Error HTTP: " + response.code()
+                            );
+
+                            Toast.makeText(
+                                    EditRecordActivity.this,
+                                    "Error HTTP: " + response.code(),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<Void> call,
+                            Throwable t
+                    ) {
+
+                        Log.e(
+                                "DELETE_IMAGE",
+                                "Error de conexión",
+                                t
+                        );
+
+                        Toast.makeText(
+                                EditRecordActivity.this,
+                                "Error de conexión",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
     }
 
     private void showDeleteDialog() {

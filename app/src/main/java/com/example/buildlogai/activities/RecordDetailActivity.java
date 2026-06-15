@@ -201,17 +201,77 @@ public class RecordDetailActivity extends AppCompatActivity {
     }
 
     private void loadImages() {
-        apiService.getImages(recordId).enqueue(new Callback<List<RecordImageDTO>>() {
-            @Override
-            public void onResponse(Call<List<RecordImageDTO>> call, Response<List<RecordImageDTO>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    rvImages.setLayoutManager(new LinearLayoutManager(RecordDetailActivity.this, LinearLayoutManager.HORIZONTAL, false));
-                    rvImages.setAdapter(new RecordImageAdapter(response.body()));
-                }
-            }
-            @Override
-            public void onFailure(Call<List<RecordImageDTO>> call, Throwable t) {}
-        });
+
+        Log.d(
+                "LOAD_IMAGES",
+                "Cargando imágenes para record " + recordId
+        );
+
+        apiService.getImages(recordId)
+                .enqueue(new Callback<List<RecordImageDTO>>() {
+
+                    @Override
+                    public void onResponse(
+                            Call<List<RecordImageDTO>> call,
+                            Response<List<RecordImageDTO>> response
+                    ) {
+
+                        Log.d(
+                                "LOAD_IMAGES",
+                                "HTTP: " + response.code()
+                        );
+
+                        if (response.body() != null) {
+
+                            Log.d(
+                                    "LOAD_IMAGES",
+                                    "Cantidad imágenes: "
+                                            + response.body().size()
+                            );
+
+                            for (RecordImageDTO image
+                                    : response.body()) {
+
+                                Log.d(
+                                        "LOAD_IMAGES",
+                                        "Imagen ID: "
+                                                + image.getId()
+                                );
+                            }
+                        }
+
+                        if (response.isSuccessful()
+                                && response.body() != null) {
+
+                            rvImages.setLayoutManager(
+                                    new LinearLayoutManager(
+                                            RecordDetailActivity.this,
+                                            LinearLayoutManager.HORIZONTAL,
+                                            false
+                                    )
+                            );
+
+                            rvImages.setAdapter(
+                                    new RecordImageAdapter(
+                                            response.body()
+                                    )
+                            );
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<List<RecordImageDTO>> call,
+                            Throwable t
+                    ) {
+
+                        Log.e(
+                                "LOAD_IMAGES",
+                                "Error",
+                                t
+                        );
+                    }
+                });
     }
 
     private void toggleStatus() {
@@ -315,6 +375,32 @@ public class RecordDetailActivity extends AppCompatActivity {
                                 ).show();
 
                                 loadImages();
+
+                            } else if (response.code() == 403) {
+
+                                Toast.makeText(
+                                        RecordDetailActivity.this,
+                                        "No tienes permiso para añadir imágenes",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+
+                                Log.e(
+                                        "UPLOAD_IMAGE",
+                                        "403 FORBIDDEN"
+                                );
+
+                            } else {
+
+                                Toast.makeText(
+                                        RecordDetailActivity.this,
+                                        "Error al subir imagen",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+
+                                Log.e(
+                                        "UPLOAD_IMAGE",
+                                        "HTTP: " + response.code()
+                                );
                             }
                         }
 
@@ -324,7 +410,11 @@ public class RecordDetailActivity extends AppCompatActivity {
                                 Throwable t
                         ) {
 
-                            t.printStackTrace();
+                            Log.e(
+                                    "UPLOAD_IMAGE",
+                                    "Error de conexión",
+                                    t
+                            );
 
                             Toast.makeText(
                                     RecordDetailActivity.this,
