@@ -247,6 +247,15 @@ public class RecordDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (recordId != null && recordId > 0) {
+            loadRecord();
+        }
+    }
+
     private void uploadImage(Uri uri) {
 
         try {

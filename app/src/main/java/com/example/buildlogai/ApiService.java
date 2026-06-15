@@ -49,6 +49,12 @@ public interface ApiService {
     @POST("records")
     Call<RecordDTO> saveRecord(@Body RecordDTO record);
 
+    @PUT("records/{id}")
+    Call<RecordDTO> updateRecord(
+            @Path("id") Long id,
+            @Body RecordDTO record
+    );
+
     @POST("ai/parse")
     Call<AIResponse> parseAI(@Body AIRequest request);
 
@@ -141,5 +147,10 @@ public interface ApiService {
     Call<Void> removeUserFromProject(
             @Path("projectId") Long projectId,
             @Path("userId") Long userId
+    );
+
+    @DELETE("records/{id}")
+    Call<Void> deleteRecord(
+            @Path("id") Long recordId
     );
 }

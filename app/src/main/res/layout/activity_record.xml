@@ -38,6 +38,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAllCaps="false"
             android:text="Voz"/>
 
         <com.google.android.material.button.MaterialButton
@@ -45,6 +46,7 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAllCaps="false"
             android:text="Texto"/>
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
@@ -170,6 +172,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/common_cancel"
+            android:textAllCaps="false"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:layout_marginEnd="16dp"/>
 
@@ -181,7 +184,8 @@
             style="@style/Widget.MaterialComponents.Button"
             android:text="@string/record_button_finish"
             app:backgroundTint="?attr/colorPrimary"
-            android:textColor="?attr/colorOnPrimary" />
+            android:textColor="?attr/colorOnPrimary"
+            android:textAllCaps="false"/>
 
     </LinearLayout>
 

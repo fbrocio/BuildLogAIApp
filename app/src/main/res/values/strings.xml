@@ -45,6 +45,12 @@
     <string name="record_button_start">Grabar</string>
     <string name="record_button_finish">Finalizar</string>
 
+    <!-- Record types -->
+    <string name="record_type">Tipo</string>
+    <string name="record_type_avance">Avance</string>
+    <string name="record_type_incidencia">Incidencia</string>
+    <string name="record_type_pendiente">Pendiente</string>
+
     <!-- Common -->
     <string name="app_name">BuildLogAI</string>
     <string name="common_cancel">Cancelar</string>

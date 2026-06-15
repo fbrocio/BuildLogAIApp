@@ -16,9 +16,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -41,6 +44,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Call;
@@ -62,23 +66,43 @@ public class ProjectDetailActivity extends AppCompatActivity {
     private MaterialButton btnGenerateReport;
     private MaterialCardView btnAddUser;
     private ImageButton btnEditProject;
-
     private EditText etSearch;
+    private MaterialButton btnSort;
+    private final ActivityResultLauncher<Intent>
+            editProjectLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+
+                        if (result.getResultCode() == RESULT_OK
+                                && result.getData() != null) {
+
+                            String updatedName =
+                                    result.getData()
+                                            .getStringExtra("PROJECT_NAME");
+
+                            String updatedDescription =
+                                    result.getData()
+                                            .getStringExtra("PROJECT_DESCRIPTION");
+
+                            if (updatedName != null) {
+                                tvProjectName.setText(updatedName);
+                            }
+                        }
+                    }
+            );
+
+    private enum SortMode {
+        NEWEST,
+        OLDEST,
+        USER_ASC,
+        USER_DESC
+    }
+
+    private SortMode currentSort = SortMode.NEWEST;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        SharedPreferences prefs =
-                getSharedPreferences("app", MODE_PRIVATE);
-
-        boolean darkMode =
-                prefs.getBoolean("dark_mode", false);
-
-        AppCompatDelegate.setDefaultNightMode(
-                darkMode
-                        ? AppCompatDelegate.MODE_NIGHT_YES
-                        : AppCompatDelegate.MODE_NIGHT_NO
-        );
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_detail);
@@ -98,6 +122,7 @@ public class ProjectDetailActivity extends AppCompatActivity {
         layoutUsers = findViewById(R.id.layoutUsers);
         btnEditProject = findViewById(R.id.btnEditProject);
         etSearch = findViewById(R.id.etSearch);
+        btnSort = findViewById(R.id.btnSort);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -144,7 +169,7 @@ public class ProjectDetailActivity extends AppCompatActivity {
             );
             intent.putExtra("PROJECT_DESCRIPTION", projectDescription);
 
-            startActivity(intent);
+            editProjectLauncher.launch(intent);
         });
 
         //LISTENER BARRA DE BÚSQUEDA
@@ -169,6 +194,55 @@ public class ProjectDetailActivity extends AppCompatActivity {
 
         // BOTÓN VOLVER
         btnBack.setOnClickListener(v -> finish());
+
+        // BOTÓN ORDENAR
+        btnSort.setOnClickListener(v -> {
+
+            PopupMenu popup =
+                    new PopupMenu(this, btnSort);
+
+            popup.getMenu().add(
+                    0,
+                    1,
+                    0,
+                    "Más recientes"
+            );
+
+            popup.getMenu().add(
+                    0,
+                    2,
+                    1,
+                    "Más antiguos"
+            );
+            popup.getMenu().add(0, 3, 2, "Usuario A-Z");
+            popup.getMenu().add(0, 4, 3, "Usuario Z-A");
+
+            popup.setOnMenuItemClickListener(item -> {
+
+                if (item.getItemId() == 1) {
+
+                    currentSort = SortMode.NEWEST;
+
+                } else if (item.getItemId() == 2) {
+
+                    currentSort = SortMode.OLDEST;
+
+                } else if (item.getItemId() == 3) {
+
+                    currentSort = SortMode.USER_ASC;
+
+                } else if (item.getItemId() == 4) {
+
+                    currentSort = SortMode.USER_DESC;
+                }
+
+                applyFilters();
+
+                return true;
+            });
+
+            popup.show();
+        });
 
         // Inicializar visuales de los chips
         updateChipVisuals();
@@ -203,7 +277,16 @@ public class ProjectDetailActivity extends AppCompatActivity {
 
                     colorRes = R.color.chip_avance;
 
+                } else if (chip.getId() == R.id.chipOpen) {
+
+                    colorRes = R.color.chip_incidencia;
+
+                } else if (chip.getId() == R.id.chipClosed) {
+
+                    colorRes = R.color.chip_avance;
+
                 } else {
+
                     continue;
                 }
 
@@ -364,14 +447,76 @@ public class ProjectDetailActivity extends AppCompatActivity {
 
         for (RecordDTO record : allRecords) {
             // Filtro por TIPO (Chips)
+            boolean typeFilterSelected =
+                    checkedIds.contains(R.id.chipIncidencia)
+                            || checkedIds.contains(R.id.chipPendiente)
+                            || checkedIds.contains(R.id.chipAvance);
+
             boolean matchesType = true;
-            if (!checkedIds.isEmpty()) {
+
+            if (typeFilterSelected) {
+
                 matchesType = false;
+
                 String type = record.getType();
+
                 if (type != null) {
-                    if (checkedIds.contains(R.id.chipIncidencia) && type.equalsIgnoreCase("incidencia")) matchesType = true;
-                    if (checkedIds.contains(R.id.chipPendiente) && type.equalsIgnoreCase("pendiente")) matchesType = true;
-                    if (checkedIds.contains(R.id.chipAvance) && type.equalsIgnoreCase("avance")) matchesType = true;
+
+                    if (checkedIds.contains(R.id.chipIncidencia)
+                            && type.equalsIgnoreCase("incidencia")) {
+
+                        matchesType = true;
+                    }
+
+                    if (checkedIds.contains(R.id.chipPendiente)
+                            && type.equalsIgnoreCase("pendiente")) {
+
+                        matchesType = true;
+                    }
+
+                    if (checkedIds.contains(R.id.chipAvance)
+                            && type.equalsIgnoreCase("avance")) {
+
+                        matchesType = true;
+                    }
+                }
+            }
+
+            // Filtro por ESTADO
+
+            boolean matchesStatus = true;
+
+            boolean openSelected =
+                    checkedIds.contains(R.id.chipOpen);
+
+            boolean closedSelected =
+                    checkedIds.contains(R.id.chipClosed);
+
+            if (openSelected || closedSelected) {
+
+                matchesStatus = false;
+
+                String status = record.getStatus();
+
+                if (status != null) {
+                    Log.d(
+                            "STATUS_FILTER",
+                            "Status recibido: " + status
+                    );
+                    if (openSelected
+                            && status.equalsIgnoreCase("ABIERTA")) {
+
+                        matchesStatus = true;
+                    }
+                    Log.d(
+                            "STATUS_FILTER",
+                            "Status recibido: " + status
+                    );
+                    if (closedSelected
+                            && status.equalsIgnoreCase("CERRADA")) {
+
+                        matchesStatus = true;
+                    }
                 }
             }
 
@@ -384,10 +529,51 @@ public class ProjectDetailActivity extends AppCompatActivity {
             }
 
             // Si cumple ambos criterios, se añade a la lista
-            if (matchesType && matchesSearch) {
+            if (matchesType
+                    && matchesStatus
+                    && matchesSearch) {
+
                 filteredList.add(record);
             }
         }
+
+        Collections.sort(
+                filteredList,
+                (r1, r2) -> {
+
+                    switch (currentSort) {
+
+                        case NEWEST:
+                            return r2.getCreatedAt()
+                                    .compareTo(r1.getCreatedAt());
+
+                        case OLDEST:
+                            return r1.getCreatedAt()
+                                    .compareTo(r2.getCreatedAt());
+
+                        case USER_ASC:
+
+                            return r1.getCreatedBy()
+                                    .getName()
+                                    .compareToIgnoreCase(
+                                            r2.getCreatedBy()
+                                                    .getName()
+                                    );
+
+                        case USER_DESC:
+
+                            return r2.getCreatedBy()
+                                    .getName()
+                                    .compareToIgnoreCase(
+                                            r1.getCreatedBy()
+                                                    .getName()
+                                    );
+
+                        default:
+                            return 0;
+                    }
+                }
+        );
 
         adapter.updateList(filteredList);
 

@@ -1,8 +1,10 @@
 package com.example.buildlogai.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -21,6 +23,7 @@ import com.example.buildlogai.model.RecordDTO;
 import com.example.buildlogai.model.RecordImageDTO;
 import com.example.buildlogai.model.StructuredData;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +38,11 @@ public class EditRecordActivity extends AppCompatActivity {
     private EditText etTitle, etContent;
     private MaterialButton btnCancel, btnSave;
     private RecyclerView rvEditImages;
-    
     private RecordDTO record;
     private ApiService apiService;
     private List<RecordImageDTO> recordImages = new ArrayList<>();
+    private MaterialButton btnDeleteRecord;
+    private MaterialAutoCompleteTextView actvType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,13 @@ public class EditRecordActivity extends AppCompatActivity {
         
         record = getIntent().getParcelableExtra("record");
 
+        btnDeleteRecord =
+                findViewById(R.id.btnDeleteRecord);
+
+        btnDeleteRecord.setOnClickListener(v -> {
+            showDeleteDialog();
+        });
+
         if (record != null) {
             populateFields();
             loadImages();
@@ -59,6 +70,21 @@ public class EditRecordActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        String[] types = {
+                "Avance",
+                "Incidencia",
+                "Pendiente"
+        };
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_list_item_1,
+                        types
+                );
+
+        actvType.setAdapter(adapter);
 
         setupListeners();
     }
@@ -73,11 +99,16 @@ public class EditRecordActivity extends AppCompatActivity {
         
         btnCancel = findViewById(R.id.btnCancel);
         btnSave = findViewById(R.id.btnSave);
+        actvType = findViewById(R.id.actvType);
     }
 
     private void populateFields() {
         etTitle.setText(record.getTitle());
         etContent.setText(record.getDescription());
+        actvType.setText(
+                record.getType(),
+                false
+        );
 
     }
 
@@ -127,14 +158,31 @@ public class EditRecordActivity extends AppCompatActivity {
         // Actualizar Record
         record.setTitle(newTitle);
         record.setDescription(newContent);
+        String newType =
+                actvType.getText()
+                        .toString()
+                        .trim()
+                        .toUpperCase();
+
+        record.setType(newType);
 
 
-        apiService.saveRecord(record).enqueue(new Callback<RecordDTO>() {
+        apiService.updateRecord(record.getId(), record).
+                enqueue(new Callback<RecordDTO>()
+                {
             @Override
             public void onResponse(Call<RecordDTO> call, Response<RecordDTO> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(EditRecordActivity.this, "Cambios guardados", Toast.LENGTH_SHORT).show();
                     finish();
+                } else if (response.code() == 403) {
+
+                    Toast.makeText(
+                            EditRecordActivity.this,
+                            "No tienes permiso para editar este registro",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
                 } else {
                     Toast.makeText(EditRecordActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show();
                 }
@@ -171,5 +219,98 @@ public class EditRecordActivity extends AppCompatActivity {
                 Toast.makeText(EditRecordActivity.this, "Error al eliminar", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void showDeleteDialog() {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Eliminar registro")
+                .setMessage(
+                        "¿Deseas eliminar este registro? " +
+                                "También se eliminarán las imágenes asociadas."
+                )
+                .setNegativeButton(
+                        "Cancelar",
+                        null
+                )
+                .setPositiveButton(
+                        "Eliminar",
+                        (dialog, which) -> {
+                            deleteRecord();
+                        }
+                )
+                .show();
+    }
+    private void deleteRecord() {
+
+        apiService.deleteRecord(record.getId())
+                .enqueue(new Callback<Void>() {
+
+                    @Override
+                    public void onResponse(
+                            Call<Void> call,
+                            Response<Void> response
+                    ) {
+                        Log.e(
+                                "DELETE_RECORD",
+                                "Código: " + response.code()
+                        );
+
+                        if (response.isSuccessful()) {
+
+                            Toast.makeText(
+                                    EditRecordActivity.this,
+                                    "Registro eliminado",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            Intent resultIntent = new Intent();
+
+                            resultIntent.putExtra(
+                                    "RECORD_DELETED",
+                                    true
+                            );
+
+                            setResult(
+                                    RESULT_OK,
+                                    resultIntent
+                            );
+
+                            finish();
+
+
+
+                        } else if (response.code() == 403) {
+
+                            Toast.makeText(
+                                    EditRecordActivity.this,
+                                    "No tienes permiso para modificar este registro",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        } else {
+
+                            Toast.makeText(
+                                    EditRecordActivity.this,
+                                    "Error eliminando registro",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<Void> call,
+                            Throwable t
+                    ) {
+
+                        t.printStackTrace();
+
+                        Toast.makeText(
+                                EditRecordActivity.this,
+                                "Error de conexión",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                });
     }
 }

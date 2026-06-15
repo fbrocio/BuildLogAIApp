@@ -30,7 +30,6 @@ public class EditProjectActivity extends AppCompatActivity {
 
     private MaterialButton btnSaveProject;
     private MaterialButton btnDeleteProject;
-
     private Long projectId;
 
     @Override
@@ -133,7 +132,31 @@ public class EditProjectActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT
                     ).show();
 
+                    Intent resultIntent = new Intent();
+
+                    resultIntent.putExtra(
+                            "PROJECT_NAME",
+                            name
+                    );
+
+                    resultIntent.putExtra(
+                            "PROJECT_DESCRIPTION",
+                            description
+                    );
+
+                    setResult(
+                            RESULT_OK,
+                            resultIntent
+                    );
+
                     finish();
+                } else if (response.code() == 403) {
+
+                    Toast.makeText(
+                            EditProjectActivity.this,
+                            "No tienes permiso para editar este proyecto",
+                            Toast.LENGTH_SHORT
+                    ).show();
 
                 } else {
 
@@ -207,6 +230,14 @@ public class EditProjectActivity extends AppCompatActivity {
 
                             startActivity(intent);
                             finish();
+
+                        } else if (response.code() == 403) {
+
+                            Toast.makeText(
+                                    EditProjectActivity.this,
+                                    "No tienes permiso para eliminar este proyecto",
+                                    Toast.LENGTH_SHORT
+                            ).show();
 
                         } else {
 

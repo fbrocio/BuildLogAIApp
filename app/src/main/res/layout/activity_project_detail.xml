@@ -166,56 +166,95 @@
             android:textColor="?attr/colorOnSurface"
             android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
-
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSort"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ordenar"
+        app:icon="@drawable/filter_menu_outline"
+        app:layout_constraintTop_toBottomOf="@id/layoutSearch"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:cornerRadius="16dp"/>
     <!-- FILTROS (CHIPS) -->
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroupFilters"
+    <HorizontalScrollView
+        android:id="@+id/scrollChips"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:scrollbars="none"
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="8dp"
-        app:singleSelection="false"
-        app:layout_constraintTop_toBottomOf="@id/layoutSearch"
+        app:layout_constraintTop_toBottomOf="@id/btnSort"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipIncidencia"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupFilters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/filter_incidencia"
-            android:checkable="true"
-            app:chipBackgroundColor="?attr/colorSurface"
-            app:chipStrokeColor="@color/chip_incidencia"
-            app:chipStrokeWidth="2dp"
-            android:textColor="?attr/colorOnSurfaceVariant" />
+            app:singleLine="true"
+            app:singleSelection="false">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipPendiente"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/filter_pendiente"
-            android:checkable="true"
-            app:chipBackgroundColor="?attr/colorSurface"
-            app:chipStrokeColor="@color/chip_pendiente"
-            app:chipStrokeWidth="2dp"
-            android:textColor="?attr/colorOnSurfaceVariant" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipIncidencia"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_incidencia"
+                android:checkable="true"
+                app:chipBackgroundColor="?attr/colorSurface"
+                app:chipStrokeColor="@color/chip_incidencia"
+                app:chipStrokeWidth="2dp"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipAvance"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/filter_avance"
-            android:checkable="true"
-            app:chipBackgroundColor="?attr/colorSurface"
-            app:chipStrokeColor="@color/chip_avance"
-            app:chipStrokeWidth="2dp"
-            android:textColor="?attr/colorOnSurfaceVariant" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPendiente"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_pendiente"
+                android:checkable="true"
+                app:chipBackgroundColor="?attr/colorSurface"
+                app:chipStrokeColor="@color/chip_pendiente"
+                app:chipStrokeWidth="2dp"
+                android:textColor="?attr/colorOnSurfaceVariant" />
 
-    </com.google.android.material.chip.ChipGroup>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAvance"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_avance"
+                android:checkable="true"
+                app:chipBackgroundColor="?attr/colorSurface"
+                app:chipStrokeColor="@color/chip_avance"
+                app:chipStrokeWidth="2dp"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipOpen"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Abiertos"
+                android:checkable="true"
+                app:chipBackgroundColor="?attr/colorSurface"
+                app:chipStrokeWidth="2dp"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipClosed"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cerrados"
+                android:checkable="true"
+                app:chipBackgroundColor="?attr/colorSurface"
+                app:chipStrokeWidth="2dp"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
 
     <!-- LISTA -->
     <androidx.recyclerview.widget.RecyclerView
@@ -226,7 +265,7 @@
         android:paddingBottom="80dp"
         android:clipToPadding="false"
         tools:listitem="@layout/item_record"
-        app:layout_constraintTop_toBottomOf="@id/chipGroupFilters"
+        app:layout_constraintTop_toBottomOf="@id/scrollChips"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

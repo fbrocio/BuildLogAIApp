@@ -18,7 +18,9 @@ import com.example.buildlogai.model.Project;
 import com.example.buildlogai.adapter.ProjectAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageView btnLogout;
     private TextView tvGreeting;
     private MaterialSwitch switchDarkMode;
+    private TextInputEditText etSearch;
+    private List<Project> allProjects = new ArrayList<>();
 
 
     @Override
@@ -44,7 +48,36 @@ public class MainActivity extends AppCompatActivity {
         btnLogout = findViewById(R.id.btnLogout);
         tvGreeting = findViewById(R.id.tvGreeting);
         switchDarkMode = findViewById(R.id.switchDarkMode);
+        etSearch = findViewById(R.id.etSearch);
         btnLogout.setOnClickListener(v -> logout());
+
+        etSearch.addTextChangedListener(
+                new android.text.TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(
+                            CharSequence s,
+                            int start,
+                            int count,
+                            int after
+                    ) {}
+
+                    @Override
+                    public void onTextChanged(
+                            CharSequence s,
+                            int start,
+                            int before,
+                            int count
+                    ) {
+                        applyFilter();
+                    }
+
+                    @Override
+                    public void afterTextChanged(
+                            android.text.Editable s
+                    ) {}
+                }
+        );
 
         SharedPreferences prefs = getSharedPreferences("app", MODE_PRIVATE);
 
@@ -94,8 +127,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<List<Project>> call, Response<List<Project>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Project> lista = response.body();
-                    ProjectAdapter adapter = new ProjectAdapter(lista);
+                    allProjects = response.body();
+
+                    ProjectAdapter adapter =
+                            new ProjectAdapter(
+                                    new java.util.ArrayList<>(allProjects)
+                            );
+
                     recyclerView.setAdapter(adapter);
                 }
             }
@@ -113,5 +151,40 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(new Intent(this, LoginActivity.class));
         finish();
+    }
+
+    private void applyFilter() {
+
+        if (allProjects == null) {
+            return;
+        }
+
+        String query =
+                etSearch.getText()
+                        .toString()
+                        .toLowerCase()
+                        .trim();
+
+        List<Project> filtered =
+                new ArrayList<>();
+
+        for (Project project : allProjects) {
+
+            if (query.isEmpty()) {
+
+                filtered.add(project);
+
+            } else if (project.getName() != null
+                    && project.getName()
+                    .toLowerCase()
+                    .contains(query)) {
+
+                filtered.add(project);
+            }
+        }
+
+        recyclerView.setAdapter(
+                new ProjectAdapter(filtered)
+        );
     }
 }

@@ -188,11 +188,13 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveProject"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="60dp"
             android:text="Guardar Cambios"
             app:backgroundTint="?attr/colorPrimary"
             android:textColor="?attr/colorOnPrimary"
-            android:textAllCaps="false"/>
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            app:cornerRadius="16dp"/>
 
     </LinearLayout>
 

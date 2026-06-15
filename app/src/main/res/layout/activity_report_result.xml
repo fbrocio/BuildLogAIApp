@@ -30,7 +30,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Informe IA"
+            android:text="Informe"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"
@@ -64,9 +64,11 @@
         android:layout_margin="16dp"
         android:text="Exportar PDF"
         android:textAllCaps="false"
+        android:textSize="16sp"
         app:icon="@android:drawable/ic_menu_save"
         app:backgroundTint="?attr/colorPrimary"
         android:textColor="?attr/colorOnPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:cornerRadius="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
